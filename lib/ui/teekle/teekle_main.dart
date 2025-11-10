@@ -11,9 +11,9 @@ class TeekleItemData {
   final String tag;
   final Color color;
   final String time;
-  final bool isDone;
+  bool isDone;
 
-  const TeekleItemData({
+   TeekleItemData({
     required this.title,
     required this.tag,
     required this.color,
@@ -106,6 +106,16 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
       ),
     );
     _toggleFabMenu();
+  }
+
+  void _shareTeekle(TeekleItemData teekle) {
+    // TODO: 나중에 실제 공유 구현
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('\'${teekle.title}\' 공유하기 눌림 (추후 구현 예정)'),
+        backgroundColor: Colors.grey[800],
+      ),
+    );
   }
 
   Future<void> _onRandomPick() async {
@@ -210,21 +220,68 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
                   const SizedBox(height: 12),
 
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: _teekles
-                            .map(
-                              (teekle) => MoveListItem(
-                                title: teekle.title,
-                                tag: teekle.tag,
-                                color: teekle.color,
-                                time: teekle.time,
+                    child: ListView.separated(
+                      padding: EdgeInsets.zero,
+                      itemCount: _teekles.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 16),
+                        itemBuilder: (context, index) {
+                          final teekle = _teekles[index];
+                           return ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Dismissible(
+                                key: ValueKey(teekle.title),
+                                direction: DismissDirection.horizontal,
+
+                                background: Container(
+                                  //좌 -> 우
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  alignment: Alignment.centerLeft,
+                                  color: Color(0xFF121212),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.reply, color: Colors.white),
+                                    ],
+                                  ),
+                                ),
+
+                                secondaryBackground: Container(
+                                  //우 -> 좌
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  alignment: Alignment.centerLeft,
+                                  color: Color(0xFF121212),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Icon(Icons.check, color: Colors.white),
+                                    ],
+                                  ),
+                                ),
+
+                                confirmDismiss: (direction) async {
+                                  if(direction == DismissDirection.startToEnd) {
+                                    _shareTeekle(teekle);
+                                  } else if (direction == DismissDirection.endToStart) {
+                                    setState(() {
+                                      teekle.isDone = !teekle.isDone;
+                                    });
+                                  }
+                                },
+
+                                child: MoveListItem(
+                                  title: teekle.title,
+                                  tag: teekle.tag,
+                                  color: teekle.color,
+                                  time: teekle.time,
+                                ),
                               ),
-                            )
-                            .toList(),
+                            );
+                        }
+                        ),
                       ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -233,9 +290,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
               Positioned.fill(
                 child: GestureDetector(
                   onTap: _toggleFabMenu,
-                  child: Container(
-                    color: Colors.black.withAlpha(0),
-                  ),
+                  child: Container(color: Colors.black.withAlpha(0)),
                 ),
               ),
               Positioned(
