@@ -80,6 +80,34 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
 
   double get _progress => _totalCount == 0 ? 0 : _doneCount / _totalCount;
 
+  bool _isFabOpen = false;
+
+  void _toggleFabMenu() {
+    setState(() {
+      _isFabOpen = !_isFabOpen;
+    });
+  }
+
+  void _onAddTodo() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('내 투두 추가 눌림 (추후 화면 이동 예정)'),
+        backgroundColor: Colors.grey[800],
+      ),
+    );
+    _toggleFabMenu();
+  }
+
+  void _onAddExercise() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('내 운동 추가 눌림 (추후 화면 이동 예정)'),
+        backgroundColor: Colors.grey[800],
+      ),
+    );
+    _toggleFabMenu();
+  }
+
   Future<void> _onRandomPick() async {
     final existingTitles = _teekles.map((teekle) => teekle.title).toSet();
     final candidates = _randomCandidates
@@ -142,67 +170,103 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //상단 헤더
-              const SizedBox(height: 12),
-              const Text(
-                '내 티클',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //상단 헤더
+                  const SizedBox(height: 12),
+                  const Text(
+                    '내 티클',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  ProgressCard(
+                    doneCount: _doneCount,
+                    totalCount: _totalCount,
+                    progress: _progress,
+                  ),
+                  const SizedBox(height: 16),
+                  RandomMoveCard(onPick: _onRandomPick),
+
+                  const SizedBox(height: 24),
+
+                  const Text(
+                    '리스트',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: _teekles
+                            .map(
+                              (teekle) => MoveListItem(
+                                title: teekle.title,
+                                tag: teekle.tag,
+                                color: teekle.color,
+                                time: teekle.time,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-
-              ProgressCard(
-                doneCount: _doneCount,
-                totalCount: _totalCount,
-                progress: _progress,
-              ),
-              const SizedBox(height: 16),
-              RandomMoveCard(onPick: _onRandomPick),
-
-              const SizedBox(height: 24),
-
-              const Text(
-                '리스트',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: _teekles
-                        .map(
-                          (teekle) => MoveListItem(
-                            title: teekle.title,
-                            tag: teekle.tag,
-                            color: teekle.color,
-                            time: teekle.time,
-                          ),
-                        )
-                        .toList(),
+            ),
+            if (_isFabOpen) ...[
+              // 반투명 배경
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: _toggleFabMenu,
+                  child: Container(
+                    color: Colors.black.withAlpha(0),
                   ),
                 ),
               ),
+              Positioned(
+                right: 16,
+                bottom: 96,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _FabMenuItem(
+                      label: '내 투두 추가',
+                      icon: Icons.checklist_rtl,
+                      onTap: _onAddTodo,
+                    ),
+                    const SizedBox(height: 16),
+                    _FabMenuItem(
+                      label: '내 운동 추가',
+                      icon: Icons.directions_run,
+                      onTap: _onAddExercise,
+                    ),
+                  ],
+                ),
+              ),
             ],
-          ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey[800],
-        onPressed: () {},
-        child: const Icon(Icons.add, color: Colors.white),
+        onPressed: _toggleFabMenu,
+        child: Icon(_isFabOpen ? Icons.close : Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
@@ -214,6 +278,50 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.checklist), label: '내 티클'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: '커뮤니티'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: '내 정보'),
+        ],
+      ),
+    );
+  }
+}
+
+class _FabMenuItem extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _FabMenuItem({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const bubbleColor = Color(0xFFCADF9C);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 56,
+            height: 56,
+            decoration: const BoxDecoration(
+              color: bubbleColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.black87),
+          ),
         ],
       ),
     );
