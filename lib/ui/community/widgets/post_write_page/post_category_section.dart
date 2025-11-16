@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+import 'package:teeklit/config/colors.dart';
+
+/// 글쓰기 페이지 카테고리
+class PostCategorySection extends StatefulWidget {
+  final TextEditingController controller;
+
+  const PostCategorySection({super.key, required this.controller});
+
+  @override
+  State<PostCategorySection> createState() => _PostCategorySectionState();
+}
+
+class _PostCategorySectionState extends State<PostCategorySection> {
+  Future<void> _openModal() async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25),
+        ),
+      ),
+      backgroundColor: AppColors.Bg,
+      builder: (context) {
+        final List<String> categoryList = [
+          '티클',
+          '자유게시판',
+          '정보',
+        ];
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: AppColors.Bg,
+                  flexibleSpace: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
+                    ),
+                  ),
+                  title: Text(
+                    '카테고리',
+                    style: TextStyle(
+                      color: AppColors.TxtLight,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(8),
+                    clipBehavior: Clip.hardEdge,
+                    children: [
+                      for (String category in categoryList) ...[
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          // TODO 바텀시트바 상단 침범하는거 해결하기
+                          child: ListTile(
+                            enableFeedback: false,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadiusGeometry.circular(25),
+                            ),
+                            tileColor: AppColors.RoundboxDarkBg,
+                            title: Text(
+                              category,
+                              style: TextStyle(
+                                color: AppColors.TxtLight,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            onTap: () => Navigator.pop(context, category),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selected != null) {
+      setState(() {
+        widget.controller.text = selected;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      style: TextStyle(color: AppColors.TxtLight),
+      readOnly: true,
+      controller: widget.controller,
+      decoration: InputDecoration(
+        hintText: '주제 선택',
+        hintStyle: TextStyle(
+          color: AppColors.TxtLight,
+          fontWeight: FontWeight.bold,
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.StrokeGrey),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.StrokeGrey),
+        ),
+        suffixIcon: Icon(Icons.arrow_forward_ios),
+      ),
+      onTap: _openModal,
+    );
+  }
+}
