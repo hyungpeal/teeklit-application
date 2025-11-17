@@ -1,10 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:teeklit/ui/core/themes/colors.dart';
 import 'widgets/teekle_list_item.dart';
 import 'widgets/random_teekle_card.dart';
 
 import 'widgets/progress_card.dart';
+
+
+class Event {
+  String title;
+  Event(this.title);
+}
 
 class TeekleItemData {
   final String title;
@@ -13,7 +21,7 @@ class TeekleItemData {
   final String time;
   bool isDone;
 
-   TeekleItemData({
+  TeekleItemData({
     required this.title,
     required this.tag,
     required this.color,
@@ -21,6 +29,7 @@ class TeekleItemData {
     this.isDone = false,
   });
 }
+
 
 class TeekleMainScreen extends StatefulWidget {
   const TeekleMainScreen({super.key});
@@ -175,151 +184,243 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
     }
   }
 
+  DateTime selectedDay = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+
+  Map<DateTime, List<Event>> events = {
+    DateTime.utc(2025,11,20) : [ Event('title'), Event('title2') ],
+    DateTime.utc(2025,11,21) : [ Event('title3') ],
+  };
+
+  List<Event> _getEventsForDay(DateTime day) {
+    return events[day] ?? [];
+  }
+
+  DateTime focusedDay = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //상단 헤더
-                  const SizedBox(height: 12),
-                  const Text(
-                    '내 티클',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+      appBar: AppBar(
+        title: Text(
+          '내 티클',
+          style: TextStyle(
+            fontFamily: 'Paperlogy',
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: false,
+        backgroundColor: AppColors.bg,
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                ProgressCard(
+                  doneCount: _doneCount,
+                  totalCount: _totalCount,
+                  progress: _progress,
+                ),
+                const SizedBox(height: 16),
+                RandomMoveCard(onPick: _onRandomPick),
+
+                const SizedBox(height: 24),
+
+                const Text(
+                  '리스트',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                TableCalendar(
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2030, 3, 14),
+                  focusedDay: DateTime.now(),
+                  availableGestures: AvailableGestures.horizontalSwipe,
+
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: false,
+                    titleTextStyle: TextStyle(
                       color: Colors.white,
+                      fontFamily: 'Paperlogy',
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 20),
 
-                  ProgressCard(
-                    doneCount: _doneCount,
-                    totalCount: _totalCount,
-                    progress: _progress,
-                  ),
-                  const SizedBox(height: 16),
-                  RandomMoveCard(onPick: _onRandomPick),
-
-                  const SizedBox(height: 24),
-
-                  const Text(
-                    '리스트',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  calendarStyle: CalendarStyle(
+                    defaultDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent,
                     ),
+
+                    selectedDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.green,
+                    ),
+                    todayDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border(top: BorderSide(width: 1, color: AppColors.green), bottom: BorderSide(width: 1, color: AppColors.green), right: BorderSide(width: 1, color: AppColors.green), left: BorderSide(width: 1, color: AppColors.green))
+                    ),
+
+                    markersAlignment: Alignment.center,
+                    markersMaxCount: 1,
+                    markerSizeScale: 1.0,
+                    markersAnchor: 1.0,
+                    markerDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.btnDarkBg.withValues(alpha: 0.7),
+                    ),
+
+                    defaultTextStyle: TextStyle(color: AppColors.txtGray),
+                    outsideDaysVisible: false,
                   ),
-                  const SizedBox(height: 12),
 
-                  Expanded(
-                    child: ListView.separated(
-                      padding: EdgeInsets.zero,
-                      itemCount: _teekles.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 16),
-                        itemBuilder: (context, index) {
-                          final teekle = _teekles[index];
-                           return ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Dismissible(
-                                key: ValueKey(teekle.title),
-                                direction: DismissDirection.horizontal,
+                  eventLoader:  _getEventsForDay,
 
-                                background: Container(
-                                  //좌 -> 우
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                  color: Color(0xFF121212),
-                                  child: const Row(
-                                    children: [
-                                      Icon(Icons.reply, color: Colors.white),
-                                    ],
-                                  ),
-                                ),
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, date, events) {
+                      if (events.isEmpty) return const SizedBox.shrink();
 
-                                secondaryBackground: Container(
-                                  //우 -> 좌
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                  color: Color(0xFF121212),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Icon(Icons.check, color: Colors.white),
-                                    ],
-                                  ),
-                                ),
+                      if (isSameDay(date, selectedDay)) {
+                        return const SizedBox.shrink();
+                      }
 
-                                confirmDismiss: (direction) async {
-                                  if(direction == DismissDirection.startToEnd) {
-                                    _shareTeekle(teekle);
-                                  } else if (direction == DismissDirection.endToStart) {
-                                    setState(() {
-                                      teekle.isDone = !teekle.isDone;
-                                    });
-                                  }
-                                },
-
-                                child: TeekleListItem(
-                                  title: teekle.title,
-                                  tag: teekle.tag,
-                                  color: teekle.color,
-                                  time: teekle.time,
-                                ),
+                      return Center(
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.btnDarkBg.withValues(alpha: 0.7),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${date.day}',
+                              style: const TextStyle(
+                                color: AppColors.txtGray,
                               ),
-                            );
-                        }
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      this.selectedDay = selectedDay;
+                      this.focusedDay = focusedDay;
+                    });
+                  },
+                  selectedDayPredicate: (day) {
+                    return isSameDay(selectedDay, day);
+                  },
+                ),
+
+                ListView.builder(
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: _teekles.length,
+                  itemBuilder: (context, index) {
+                    final teekle = _teekles[index];
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Dismissible(
+                        key: ValueKey(teekle.title),
+                        direction: DismissDirection.horizontal,
+
+                        background: Container(
+                          //좌 -> 우
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
+                          alignment: Alignment.centerLeft,
+                          color: Color(0xFF121212),
+                          child: const Row(
+                            children: [Icon(Icons.reply, color: Colors.white)],
+                          ),
+                        ),
+
+                        secondaryBackground: Container(
+                          //우 -> 좌
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          alignment: Alignment.centerLeft,
+                          color: Color(0xFF121212),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [Icon(Icons.check, color: Colors.white)],
+                          ),
+                        ),
+
+                        confirmDismiss: (direction) async {
+                          if (direction == DismissDirection.startToEnd) {
+                            _shareTeekle(teekle);
+                          } else if (direction == DismissDirection.endToStart) {
+                            setState(() {
+                              teekle.isDone = !teekle.isDone;
+                            });
+                          }
+                        },
+
+                        child: TeekleListItem(
+                          title: teekle.title,
+                          tag: teekle.tag,
+                          color: teekle.color,
+                          time: teekle.time,
                         ),
                       ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          if (_isFabOpen) ...[
+            // 반투명 배경
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: _toggleFabMenu,
+                child: Container(color: Colors.black.withAlpha(100)),
+              ),
+            ),
+            Positioned(
+              right: 16,
+              bottom: 96,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _FabMenuItem(
+                    label: '내 투두 추가',
+                    icon: Icons.checklist_rtl,
+                    onTap: _onAddTodo,
+                  ),
+                  const SizedBox(height: 16),
+                  _FabMenuItem(
+                    label: '내 운동 추가',
+                    icon: Icons.directions_run,
+                    onTap: _onAddExercise,
+                  ),
                 ],
               ),
             ),
-            if (_isFabOpen) ...[
-              // 반투명 배경
-              Positioned.fill(
-                child: GestureDetector(
-                  onTap: _toggleFabMenu,
-                  child: Container(color: Colors.black.withAlpha(0)),
-                ),
-              ),
-              Positioned(
-                right: 16,
-                bottom: 96,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _FabMenuItem(
-                      label: '내 투두 추가',
-                      icon: Icons.checklist_rtl,
-                      onTap: _onAddTodo,
-                    ),
-                    const SizedBox(height: 16),
-                    _FabMenuItem(
-                      label: '내 운동 추가',
-                      icon: Icons.directions_run,
-                      onTap: _onAddExercise,
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ],
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.grey[800],
+        backgroundColor: Colors.white,
         onPressed: _toggleFabMenu,
         child: Icon(_isFabOpen ? Icons.close : Icons.add),
       ),
