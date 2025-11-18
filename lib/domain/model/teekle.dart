@@ -1,4 +1,6 @@
+import 'enums.dart';
 import 'package:teeklit/domain/model/task.dart';
+import 'noti.dart';
 
 ///==================== Teekle 모델 정의 ====================
 class Teekle {
