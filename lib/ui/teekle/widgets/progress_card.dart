@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ProgressCard extends StatelessWidget {
+  final String day;
   final int doneCount;
   final int totalCount;
   final double progress;
 
   const ProgressCard({super.key,
+    required this.day,
     required this.doneCount,
     required this.totalCount,
     required this.progress});
@@ -24,12 +26,12 @@ class ProgressCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    '11월 9일 일요일',
+                  Text(
+                    day,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Paperlogy',
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 12),
