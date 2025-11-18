@@ -1,6 +1,6 @@
 import 'package:teeklit/domain/model/task.dart';
 
-/*==================== Teekle 모델 정의 ====================*/
+///==================== Teekle 모델 정의 ====================
 class Teekle {
   final int teekleId;
   final int taskId;
@@ -23,4 +23,33 @@ class Teekle {
     required this.noti,
     this.url,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'teekleId' : teekleId,
+      'taskId' : taskId,
+      'type' : type.name,
+      'execDate' : execDate.toIso8601String(),
+      'title' : title,
+      'tag' : tag,
+      'isDone' : isDone,
+      'noti' : noti.toMap(),
+      'url' : url,
+    };
+  }
+
+  factory Teekle.fromMap(Map<String, dynamic> map) {
+    return Teekle(
+      teekleId: map['teekleId'],
+      taskId: map['taskId'],
+      type: TaskType.values[map['type']],
+      execDate: DateTime.parse(map['execDate']),
+      title: map['title'],
+      tag: map['tag'],
+      isDone: map['isDone'],
+      noti: Noti.fromMap(map['noti']),
+      url: map['url'],
+    );
+  }
 }
+

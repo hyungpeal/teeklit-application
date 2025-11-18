@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:teeklit/utils/colors.dart';
 
 class TeekleBottomSheetHeader extends StatelessWidget {
   final String title;
 
-  // 닫기 버튼(X)은 항상 필요!!!ㄱ
+  /// 닫기 버튼(X)은 항상 필요!!!
   final VoidCallback onClose;
 
   final bool showLeading;
@@ -64,7 +65,7 @@ class TeekleBottomSheetHeader extends StatelessWidget {
                     Text(
                       '편집',
                       style: TextStyle(
-                        color: Color(0xff8E8E93),
+                        color: AppColors.TxtLight,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -73,7 +74,7 @@ class TeekleBottomSheetHeader extends StatelessWidget {
                     Icon(
                       Icons.mode_edit_outlined,
                       size: 14,
-                      color: Color(0xff8E8E93),
+                      color: AppColors.TxtLight,
                     ),
                   ],
                 ),

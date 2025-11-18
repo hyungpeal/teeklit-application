@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teeklit/ui/teekle/view_model/teekle_setting_page.dart';
+import 'package:teeklit/ui/teekle/widgets/teekle_setting_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -101,7 +101,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const TeekleSettingPage(type: TeeklePageType.editTodo,)),
+                  MaterialPageRoute(builder: (context) => const TeekleSettingPage(type: TeeklePageType.editWorkout,)),
                 );
               },
               child: const Text(

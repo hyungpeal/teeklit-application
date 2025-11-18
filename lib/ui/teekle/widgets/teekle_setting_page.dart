@@ -34,17 +34,25 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
   int? _interval;
   DateTime? _repeatEndDate;
   List<DayOfWeek>? _selectedDaysOfWeek;
+  final _titleController = TextEditingController();
 
   late FocusNode _titleFocusNode;
 
   @override
   void initState() {
     super.initState();
+    _titleController.addListener(() {
+      final String trimedTitle = _titleController.value.text.trim();
+      _hasTitle = trimedTitle.isNotEmpty;
+      _titleController.value = _titleController.value.copyWith(
+        text: trimedTitle);
+    });
     _titleFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
+    _titleController.dispose();
     _titleFocusNode.dispose();
     super.dispose();
   }
@@ -450,7 +458,11 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
         ),
       ),
       bottomNavigationBar: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          //task 객체 생성
+          //task 객체의 반복 패턴에 따라 execDate가 다른 teekle 객체 생성.
+          //수정페이지에서 저장하기 누름 -> 수정일 이후에 있는 teekle들 삭제 후 task 새로 생성, task에 따른 teekle 생성.
+        },
         child: Container(
           width: double.infinity,
           height: 92,
