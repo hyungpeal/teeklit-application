@@ -22,6 +22,8 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
   bool _isLoading = false;
   bool _hasMoreData = true;
 
+  final Set<String> _bookmarkedVideoUrls = {};
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +38,10 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_isBookmarkMode) return;
+
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       print('100 이하');
       _loadData();
     }
@@ -44,6 +49,12 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final displayVideos = _isBookmarkMode
+        ? videos
+              .where((v) => _bookmarkedVideoUrls.contains(v.videoUrl))
+              .toList()
+        : videos;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.bg,
@@ -70,9 +81,14 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
             child: ListView.builder(
               controller: _scrollController,
               shrinkWrap: true,
-              itemCount: videos.length,
+              itemCount: displayVideos.length,
               itemBuilder: (context, index) {
-                final videoId = videos[index].videoUrl.split('/').last;
+                final video = displayVideos[index];
+                final videoId = video.videoUrl.split('/').last;
+
+                final isBookmarked = _bookmarkedVideoUrls.contains(
+                  video.videoUrl,
+                );
 
                 return Container(
                   decoration: BoxDecoration(
@@ -145,10 +161,22 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
                                   const SizedBox(width: 4.0),
                                   GestureDetector(
                                     onTap: () {
-                                      setState(() {});
+                                      setState(() {
+                                        if (isBookmarked) {
+                                          _bookmarkedVideoUrls.remove(
+                                            video.videoUrl,
+                                          );
+                                        } else {
+                                          _bookmarkedVideoUrls.add(
+                                            video.videoUrl,
+                                          );
+                                        }
+                                      });
                                     },
                                     child: SvgPicture.asset(
-                                      'assets/icons/bookmark_uncheck.svg',
+                                      isBookmarked
+                                          ? 'assets/icons/bookmark.svg'
+                                          : 'assets/icons/bookmark_uncheck.svg',
                                     ),
                                   ),
                                 ],
@@ -265,9 +293,7 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
       }
       setState(() {
         videos.addAll(futureWorkouts.data);
-        print('currentPage: ${_currentPage}');
         _currentPage = _currentPage + 1;
-        print('currentPage: ${_currentPage}');
       });
     } catch (e) {
       print('데이터를 불러오는 중 오류가 발생했어요 ');
