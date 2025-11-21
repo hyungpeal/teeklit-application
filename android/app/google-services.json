@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "596157132732",
+    "project_id": "teeklit",
+    "storage_bucket": "teeklit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596157132732:android:5a32bf0c1b6b5133e945b9",
+        "android_client_info": {
+          "package_name": "com.teeklit.teeklit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKuApiUZfOpVjpAuiG8iwTpt569N6LooI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
