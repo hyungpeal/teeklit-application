@@ -2,9 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:teeklit/ui/community/go_router.dart';
+import 'login/app_router.dart';
 import 'ui/teekle/widgets/teekle_setting_test.dart';
 import 'ui/teekle/widgets/teekle_setting_test2.dart';
-
+import 'package:teeklit/login/app_router.dart';
 
 //파이어베이스
 import 'package:firebase_core/firebase_core.dart';
@@ -33,19 +34,9 @@ class Teeklit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: router,
-      theme: ThemeData(fontFamily: 'Paperlogy'),
+      routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
-      locale: const Locale('ko', 'KR'),
-      
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('ko', ''),
-      ]
+      theme: ThemeData(fontFamily: 'Paperlogy'),
     );
   }
 }
