@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teeklit/ui/core/themes/colors.dart';
 
 class RandomMoveCard extends StatelessWidget {
   final VoidCallback onPick;
@@ -10,7 +11,7 @@ class RandomMoveCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF252525),
+        color: AppColors.roundboxDarkBg,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -22,8 +23,8 @@ class RandomMoveCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          ElevatedButton(onPressed: onPick, child: const Text('뽑기'),
-          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF3A3A3A),
+          ElevatedButton(onPressed: onPick, child: const Text('뽑기', style: TextStyle(color: Colors.white),),
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.btnDarkBg,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(999),
           ),

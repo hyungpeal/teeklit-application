@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class TeekleRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String _collectionName = 'teekles';
+  static const String _randomCollectionName = 'random_teekle_candidates'; //랜덤 티클 후보용 컬랙션 이름
 
   /// Teekle 리스트 일괄 저장 메소드 (task랑 상관없이 한 폴더에 일괄 저장)
   Future<void> createTeekles(List<Teekle> teekles) async {
@@ -152,6 +153,20 @@ class TeekleRepository {
       await batch.commit();
     } catch (e) {
       throw Exception('날짜별 Teekle 삭제 실패: $e');
+    }
+  }
+
+  /// 랜덤 티클 후보 목록 조회
+  Future<List<Teekle>> getRandomTeekleCandidates() async {
+    try {
+      final querySnapshot =
+      await _firestore.collection(_randomCollectionName).get();
+
+      return querySnapshot.docs
+          .map((doc) => Teekle.fromMap(doc.data()))
+          .toList();
+    } catch (e) {
+      throw Exception('랜덤 Teekle 후보 조회 실패: $e');
     }
   }
 }

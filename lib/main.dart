@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:teeklit/ui/community/go_router.dart';
+import 'ui/teekle/widgets/teekle_main.dart';
 import 'ui/teekle/widgets/teekle_setting_test.dart';
 import 'ui/teekle/widgets/teekle_setting_test2.dart';
 
@@ -32,20 +33,26 @@ class Teeklit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      theme: ThemeData(fontFamily: 'Paperlogy'),
-      debugShowCheckedModeBanner: false,
+    return MaterialApp(
       locale: const Locale('ko', 'KR'),
-      
+
+      supportedLocales: const [
+        Locale('ko', 'KR'),
+        Locale('en', 'US'),
+      ],
+
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('ko', ''),
-      ]
+
+      debugShowCheckedModeBanner: false,
+      title: 'Teeklit',
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFF121212),
+      ),
+      home: const TeekleMainScreen(),
     );
   }
 }
