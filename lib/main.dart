@@ -2,9 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:teeklit/login/login_screen.dart';
+import 'package:teeklit/onboarding/onboarding_screen.dart';
 import 'package:teeklit/ui/community/go_router.dart';
 import 'package:teeklit/ui/teekle/providers/teekle_stats_provider.dart';
+import 'ui/core/providers/user_provider.dart';
 import 'ui/teekle/widgets/teekle_main.dart';
+import 'package:teeklit/ui/mypage/widgets/mypage.dart';
 import 'ui/teekle/widgets/teekle_setting_test.dart';
 import 'ui/teekle/widgets/teekle_setting_test2.dart';
 
@@ -34,6 +38,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TeekleStatsProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const Teeklit(),
     ),
@@ -46,6 +51,13 @@ class Teeklit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: '/mypage',
+
+      routes: {
+        '/mypage': (context) => const MyPageScreen(),
+        '/login': (context) => const LoginScreen(),
+      },
+
       locale: const Locale('ko', 'KR'),
 
       supportedLocales: const [
@@ -64,7 +76,7 @@ class Teeklit extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFF121212),
       ),
-      home: const TeekleMainScreen(),
+      home: const MyPageScreen(),
     );
   }
 }
