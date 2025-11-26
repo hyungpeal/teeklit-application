@@ -7,7 +7,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO Sliver 공부해보기
     return AppBar(
       backgroundColor: AppColors.bg,
       title: Text(

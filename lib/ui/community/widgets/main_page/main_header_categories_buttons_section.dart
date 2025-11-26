@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teeklit/domain/model/community/posts.dart';
 import 'package:teeklit/ui/community/widgets/main_page/main_category_toggle_buttons.dart';
 
 class MainHeaderCategoriesButtonsSection extends StatelessWidget {
@@ -7,7 +8,12 @@ class MainHeaderCategoriesButtonsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> categoryList = ['인기', '티클', '자유게시판', '정보', '지도'];
+    final List<String> categoryList = [
+      PostCategory.popular.value,
+      PostCategory.teekle.value,
+      PostCategory.free.value,
+      PostCategory.info.value,
+    ];
 
     return Align(
       alignment: Alignment.centerLeft,

@@ -1,0 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+enum UserAuthor {
+  client(value: '일반'),
+  admin(value: '관리자');
+
+  final String value;
+
+  const UserAuthor({required this.value});
+}
+
+class User {
+  final String? userId;
+  final String email;
+  final String? password;
+  final String nickname;
+  final String? profileImagePath; // 로컬 파일 경로 (선택)
+  final isAdmin = false;
+  final List<String>? blockUser;
+
+
+  const User({
+    required this.email,
+    this.password,
+    required this.nickname,
+    this.profileImagePath,
+    this.userId,
+    this.blockUser,
+  });
+
+  factory User.fromJson(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return User(
+      userId: doc.id,
+      email: data['email'],
+      nickname: data['nickname'],
+      profileImagePath: data['profileImagePath'],
+    );
+  }
+
+  User copyWith({
+    String? email,
+    String? password,
+    String? nickname,
+    String? profileImagePath,
+    List<String>? blockUser,
+  }) {
+    return User(
+      email: email ?? this.email,
+      password: password ?? this.password,
+      nickname: nickname ?? this.nickname,
+      profileImagePath: profileImagePath ?? this.profileImagePath,
+    );
+  }
+}

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teeklit/domain/model/community/comments.dart';
 
 enum PostCategory {
+  popular(value: '인기'),
   teekle(value: '티클'),
   free(value: '자유게시판'),
   info(value: '정보');
@@ -18,25 +19,27 @@ class Posts {
   final String postContents; // 게시글 내용
   final String category; // 게시글 카테고리
   final int postView; // 조회수
-  final List<String>? imgUrls; // 이미지 링크들
+  final List<String> imgUrls; // 이미지 링크들
   final String? teekleId; // 티클 ID
   final DateTime createAt; // 게시글 생성 날짜
   final DateTime? updateAt; // 게시글 마지막 수정 날짜
-  final List<String>? postLike; // 좋아요 누른 사람들
+  final List<String> postLike; // 좋아요 누른 사람들
   final String userId; // 게시글 작성자 UID
   final List<Comments>? comment; // 댓글
+  
+  final bool isHided = false;
 
   Posts({
     this.postId,
     required this.postTitle,
     required this.postContents,
     required this.category,
-    this.postView = 0,
-    this.imgUrls,
+    required this.postView,
+    required this.imgUrls,
     this.teekleId,
     required this.createAt,
     this.updateAt,
-    this.postLike,
+    required this.postLike,
     required this.userId,
     this.comment,
   });
@@ -45,17 +48,19 @@ class Posts {
   factory Posts.fromJson(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
+    final Timestamp ts = data['createAt'];
+
     return Posts(
       postId: doc.id,
       postTitle: data['postTitle'],
       postContents: data['postContents'],
       category: data['category'],
       postView: data['postView'],
-      imgUrls: data['imgUrls'],
+      imgUrls: List<String>.from(data['imgUrls']),
       teekleId: data['teekleId'],
-      createAt: data['createAt'],
+      createAt: DateTime.parse(ts.toDate().toString()),
       updateAt: data['updateAt'],
-      postLike: data['postLike'],
+      postLike: List.from(data['postLike']),
       userId: data['userId'],
       comment: data['comment'],
     );
@@ -74,6 +79,8 @@ class Posts {
       'postLike': postLike,
       'userId': userId,
       'comment': comment,
+      'postView': postView,
+      'isBlocked': false,
     };
   }
 }

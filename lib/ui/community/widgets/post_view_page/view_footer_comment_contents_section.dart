@@ -1,22 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:teeklit/domain/model/community/comments.dart';
+import 'package:teeklit/domain/model/community/report.dart';
+import 'package:teeklit/domain/model/user/user.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 import 'package:teeklit/ui/community/widgets/community_custom_buttons.dart';
 
 /// 게시글 상세보기 페이지 댓글창
 class ViewFooterCommentContentsSection extends StatefulWidget {
-  final bool isRecomment;
+  final Comments commentInfo;
+  final User userInfo;
+  final String userId;
+  final bool isAdmin;
+  final Function(String?) onReply;
+  final Future<void> Function() blockUser;
+  final Future<bool> Function(String, String, String) reportPost;
+  final Future<void> Function(String) hideComment;
 
   /// 댓글 보여주는 위젯
   const ViewFooterCommentContentsSection({
     super.key,
-    this.isRecomment = false,
+    required this.commentInfo,
+    required this.userInfo,
+    required this.onReply,
+    required this.blockUser,
+    required this.reportPost,
+    required this.hideComment,
+    required this.userId,
+    required this.isAdmin,
   });
 
   @override
-  State<ViewFooterCommentContentsSection> createState() => _ViewFooterCommentContentsSectionState();
+  State<ViewFooterCommentContentsSection> createState() =>
+      _ViewFooterCommentContentsSectionState();
 }
 
-class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentContentsSection> {
+class _ViewFooterCommentContentsSectionState
+    extends State<ViewFooterCommentContentsSection> {
+  late final String commentId;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.commentInfo.commentId != null) {
+      commentId = widget.commentInfo.commentId!;
+    } else {
+      commentId = 'null';
+    }
+  }
+
   // modal 모달
   Future<void> _openModal() async {
     await showModalBottomSheet<String>(
@@ -51,7 +84,14 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
                         fontSize: 14,
                       ),
                     ),
-                    callback: () {},
+                    callback: () async{
+                      await widget.reportPost(
+                        commentId,
+                        TargetType.comment.value.toString(),
+                        widget.userId,
+                      );
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
                 Container(
@@ -70,9 +110,44 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
                         fontSize: 14,
                       ),
                     ),
-                    callback: () {},
+                    callback: () async{
+                      await widget.blockUser();
+                      Navigator.pop(context);
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        context.go('/community/');
+                      });
+                    },
                   ),
                 ),
+                if(widget.isAdmin)...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.txtGray,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.only(top: 5),
+                    width: double.infinity,
+                    child: CustomTextButton(
+                      buttonText: Text(
+                        '숨기기',
+                        style: TextStyle(
+                          color: AppColors.ivory,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                      callback: () async {
+                        await widget.hideComment(commentId);
+                        Navigator.pop(context);
+
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          context.go('/community/');
+                        });
+                      },
+                    ),
+                  ),
+                ],
                 SizedBox(
                   height: 15,
                 ),
@@ -103,7 +178,6 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
     );
   }
 
-
   // 댓글 정보
   Widget _buildCommentInfo() {
     return Padding(
@@ -119,14 +193,15 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
               aspectRatio: 1,
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                  'https://cdn.epnnews.com/news/photo/202008/5216_6301_1640.jpg',
+                  widget.userInfo.profileImagePath ??
+                      'https://cdn.epnnews.com/news/photo/202008/5216_6301_1640.jpg',
                 ),
               ),
             ),
           ),
           Expanded(
             child: Text(
-              '관악구치킨왕',
+              widget.userInfo.nickname,
               style: TextStyle(
                 color: AppColors.txtLight,
                 fontSize: 12,
@@ -138,7 +213,7 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
             spacing: 5,
             children: [
               Text(
-                '6시간전',
+                widget.commentInfo.createAt.toString(),
                 style: TextStyle(
                   color: AppColors.inactiveTxtGray,
                   fontSize: 10,
@@ -163,21 +238,24 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
   // 댓글 내용
   Widget _buildCommentBody() {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox.fromSize(
           size: Size(30, 30),
         ),
-        Expanded(
+        Flexible(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '요즘에 도시락 정기배달 해주는 업체도 있긴 하더라고요.. 좋아보이던데.. ㅠ 근데 저는 그냥 집에서 파스타 같은 한그릇 요리 간단하게 해먹어요!',
+                widget.commentInfo.commentContents,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: AppColors.txtLight,
                 ),
+                textAlign: TextAlign.start,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
@@ -185,7 +263,7 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
                   children: [
                     CustomTextIconButton(
                       buttonText: Text(
-                        '3',
+                        '${widget.commentInfo.commentLike?.length ?? 0}',
                         style: TextStyle(
                           color: AppColors.txtLight,
                           fontWeight: FontWeight.w400,
@@ -197,17 +275,20 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
                         size: 14,
                         color: AppColors.txtLight,
                       ),
-                      callback: (){},
+                      callback: () {},
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        widget.onReply(commentId);
+                      },
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.transparent,
                         backgroundColor: Colors.transparent,
                         minimumSize: Size(0, 0),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      child: Text( // TODO 눌렀을 때, 댓글 창 바뀌기
+                      child: Text(
+                        // TODO 눌렀을 때, 댓글 창 바뀌기
                         '댓글달기',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -230,22 +311,26 @@ class _ViewFooterCommentContentsSectionState extends State<ViewFooterCommentCont
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: widget.isRecomment ? Color(0xff242424) : AppColors.bg,
-        border: widget.isRecomment ? Border(top: BorderSide(color: AppColors.strokeGray)) : Border(bottom: BorderSide(color: AppColors.strokeGray))
+        color: widget.commentInfo.parentId != null
+            ? Color(0xff242424)
+            : AppColors.bg,
+        border:
+            // widget.commentInfo.parentId != null
+            //     ? Border(top: BorderSide(color: AppColors.strokeGray)) :
+            Border(bottom: BorderSide(color: AppColors.strokeGray)),
       ),
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Padding(
             padding: EdgeInsets.only(
-              left: widget.isRecomment ? 45 : 15,
+              left: widget.commentInfo.parentId != null ? 45 : 15,
               right: 15,
             ),
             child: Column(
               children: [
-                // 댓글 정보 TODO 매개변수로 댓글 정보와 내용 등 넘겨주고 아래 함수도 수정
+                // 댓글 정보
                 _buildCommentInfo(),
                 // 댓글 내용, 좋아요와 댓글달기 버튼
                 _buildCommentBody(),

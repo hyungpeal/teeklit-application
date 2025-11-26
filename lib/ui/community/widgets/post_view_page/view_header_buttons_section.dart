@@ -6,13 +6,13 @@ import 'package:teeklit/ui/core/themes/colors.dart';
 import 'package:teeklit/ui/community/widgets/post_view_page/view_bookmark_toggle_button.dart';
 
 class ViewHeaderButtonsSection extends StatelessWidget {
+  final String category;
+
   /// 게시글 상세보기 페이지의 상단에서 버튼이 있는 section
-  const ViewHeaderButtonsSection({super.key});
+  const ViewHeaderButtonsSection({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<CommunityViewModel>();
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -27,7 +27,7 @@ class ViewHeaderButtonsSection extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  vm.post!.category.toString(),
+                  category,
                   style: TextStyle(
                     color: AppColors.ivory,
                     fontSize: 10,
@@ -43,7 +43,8 @@ class ViewHeaderButtonsSection extends StatelessWidget {
             ),
           ),
         ),
-        ViewBookmarkToggleButton(),
+        /// TODO 북마크 아직 안함
+        // ViewBookmarkToggleButton(),
       ],
     );
   }

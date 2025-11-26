@@ -2,8 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:teeklit/ui/community/go_router.dart';
-import 'ui/teekle/widgets/teekle_setting_test.dart';
-import 'ui/teekle/widgets/teekle_setting_test2.dart';
 
 
 //파이어베이스

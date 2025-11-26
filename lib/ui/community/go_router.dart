@@ -5,6 +5,7 @@ import 'package:teeklit/ui/community/community_main_page.dart';
 import 'package:teeklit/ui/community/community_post_view_page.dart';
 import 'package:teeklit/ui/community/community_post_write_page.dart';
 import 'package:teeklit/ui/community/view_model/community_view_model.dart';
+import 'package:teeklit/ui/community/view_model/report_view_model.dart';
 
 class SampleCommunityHOme extends StatefulWidget {
   final Widget child;
@@ -17,8 +18,11 @@ class SampleCommunityHOme extends StatefulWidget {
 class _SampleCommunityHOmeState extends State<SampleCommunityHOme> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CommunityViewModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CommunityViewModel()),
+        ChangeNotifierProvider(create: (_) => ReportViewModel()),
+      ],
       child:widget.child ,
     );
   }

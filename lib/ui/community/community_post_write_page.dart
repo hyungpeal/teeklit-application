@@ -54,6 +54,7 @@ class _CommunityPostWritePageState extends State<CommunityPostWritePage> {
 
       context.read<CommunityViewModel>().addPost(postTitle, postContents, category, _images);
 
+      /// TODO 이동 시, 메인 페이지 초기화
       context.go('/community');
     }
   }

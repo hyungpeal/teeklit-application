@@ -3,57 +3,110 @@ import 'package:teeklit/ui/core/themes/colors.dart';
 import 'package:teeklit/ui/community/widgets/community_custom_buttons.dart';
 
 /// 게시글 상세보기 페이지 하단 댓글 영역
-class ViewWriteCommentSection extends StatelessWidget {
-  final double bottomPadding;
+class ViewWriteCommentSection extends StatefulWidget {
+  final FocusNode focusNode;
+  final String? parentId;
+  final Future<void> Function(String, String?) vmCommentWrite;
 
   /// 게시글 상세보기 페이지의 bottom, 댓글을 작성하는 section
-  const ViewWriteCommentSection({super.key, required this.bottomPadding});
+  const ViewWriteCommentSection({
+    super.key,
+    required this.focusNode,
+    required this.parentId,
+    required this.vmCommentWrite,
+  });
+
+  @override
+  State<ViewWriteCommentSection> createState() =>
+      ViewWriteCommentSectionState();
+}
+
+class ViewWriteCommentSectionState extends State<ViewWriteCommentSection> {
+  final TextEditingController _commentController = TextEditingController();
+
+  /// 댓글 작성 함수 TODO callback 함수 내려서 전달해주기
+  void writeComment() {
+    widget.vmCommentWrite(_commentController.text, widget.parentId);
+    _commentController.clear();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
-    final double safePadding = viewInsets > 0 ? 0 : bottomPadding;
+    final bool isReplying = widget.parentId != null;
 
     return Container(
       padding: EdgeInsets.only(
-        bottom: safePadding,
-        top: 10,
+        bottom: 10,
         left: 15,
         right: 15,
+        top: 10,
       ),
-      // bottom sheet가 body 부분을 침범하는 현상을 해결하기 위해 높이를 주고 이 높이만큼 body에 padding을 줌
-      height: 85,
       color: Color(0xff242424),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: AppColors.bg,
-                borderRadius: BorderRadius.circular(25),
+          if(isReplying) ...[
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(bottom: 5),
+              child: Text(
+                '↳ 답글 작성중...',
+                style: TextStyle(color: AppColors.txtLight,),
               ),
-              child: TextField(
-                maxLines: 1,
-                cursorColor: AppColors.txtLight,
-                decoration: InputDecoration(
-                  hint: Text(
-                    '댓글을 입력하세요...',
-                    style: TextStyle(color: AppColors.txtLight),
+            )
+          ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: AppColors.bg,
+                    borderRadius: BorderRadius.circular(25),
                   ),
-                  border: InputBorder.none,
+                  child: TextField(
+                    focusNode: widget.focusNode,
+                    controller: _commentController,
+                    maxLines: 1,
+                    cursorColor: AppColors.txtLight,
+                    decoration: InputDecoration(
+                      hint: Text(
+                        '댓글을 입력하세요...',
+                        style: TextStyle(color: AppColors.txtLight),
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    style: TextStyle(
+                      color: AppColors.txtLight,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          CustomIconButton(
-            buttonIcon: Icon(
-              Icons.forum,
-              color: AppColors.txtLight,
-              size: 24,
-            ),
-            callback: () {},
+              CustomIconButton(
+                buttonIcon: Icon(
+                  Icons.forum,
+                  color: AppColors.txtLight,
+                  size: 24,
+                ),
+                callback: () {
+                  FocusScope.of(context).unfocus();
+                  writeComment();
+                },
+              ),
+            ],
           ),
         ],
       ),

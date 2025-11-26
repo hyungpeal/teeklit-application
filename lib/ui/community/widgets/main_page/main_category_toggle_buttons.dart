@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:teeklit/domain/model/community/posts.dart';
+import 'package:teeklit/ui/community/view_model/community_view_model.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 
 /// 커뮤니티 게시판의 카테고리 토글 버튼
@@ -30,10 +33,10 @@ class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
 
   @override
   Widget build(BuildContext context) {
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final double height = constraints.maxHeight;
-        final String specificText = '인기';
 
         final List<Widget> buttonList = [];
 
@@ -71,7 +74,7 @@ class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (category == specificText) ...[
+                        if (category == PostCategory.popular.value) ...[
                           Icon(
                             Icons.local_fire_department,
                             color: AppColors.warningRed,
@@ -95,7 +98,7 @@ class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
             ),
           );
 
-          if (category == specificText && i < widget.categories.length - 1) {
+          if (category == PostCategory.popular.value && i < widget.categories.length - 1) {
             buttonList.add(
               Container(
                 width: 1.5,

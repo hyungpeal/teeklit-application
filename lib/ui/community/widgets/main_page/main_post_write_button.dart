@@ -10,7 +10,7 @@ class PostWriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        GoRouter.of(context).push('/community/write');
+        context.go('/community/write');
       },
       style: ElevatedButton.styleFrom(
         shape: CircleBorder(),

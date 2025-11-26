@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teeklit/domain/model/community/posts.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 
 /// 글쓰기 페이지 카테고리
@@ -24,9 +25,9 @@ class _PostCategorySectionState extends State<PostCategorySection> {
       backgroundColor: AppColors.bg,
       builder: (context) {
         final List<String> categoryList = [
-          '티클',
-          '자유게시판',
-          '정보',
+          PostCategory.free.value,
+          PostCategory.teekle.value,
+          PostCategory.info.value,
         ];
         return Padding(
           padding: const EdgeInsets.all(15.0),

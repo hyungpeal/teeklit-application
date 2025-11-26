@@ -14,7 +14,9 @@ class WriteAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.bg,
       leading: IconButton(
-        onPressed: () {GoRouter.of(context).pop();},
+        onPressed: () {
+          context.go('/community/');
+        },
         icon: Icon(Icons.chevron_left, color: AppColors.txtGray),
       ),
       actions: actions,
