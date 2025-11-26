@@ -3,7 +3,7 @@ import 'package:teeklit/ui/core/themes/colors.dart';
 
 class TeekleListItem extends StatelessWidget {
   final String title;
-  final String tag;
+  final String? tag;
   final Color color;
   final String? time;
 
@@ -37,7 +37,9 @@ class TeekleListItem extends StatelessWidget {
           ),
           Row(
             children: [
-              Chip(label: Text(tag, style: TextStyle(color: Colors.white),), backgroundColor: AppColors.bg),
+              if(tag != null) ... [
+                Chip(label: Text(tag!, style: TextStyle(color: Colors.white),), backgroundColor: AppColors.bg),
+              ],
               const SizedBox(width: 8),
               if(time != null) ... [
                 Icon(Icons.access_time, size: 16, color: Colors.black54),

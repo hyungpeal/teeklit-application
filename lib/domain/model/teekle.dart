@@ -8,8 +8,8 @@ class Teekle {
   final TaskType type;
   final DateTime execDate;
   final String title;
-  final String? tag;
-  final bool isDone;
+  String? tag;
+  bool isDone;
   final Noti noti;
   final String? url;
 
