@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:teeklit/ui/teekle/view_model/view_model_teekle_setting.dart';
 import 'package:teeklit/ui/teekle/widgets/bottom_sheet_alarm_setting.dart';
 import 'package:teeklit/ui/teekle/widgets/bottom_sheet_date_setting.dart';
@@ -225,6 +226,20 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
                       ),
                       const SizedBox(height: 10),
                       TextField(
+                        onTap: () async {
+                          if(widget.type == TeeklePageType.addWorkout) {
+                            final dynamic result = await context.push('/teekle/selectWorkout');
+                            Map<String, dynamic>? _resultMap = result;
+                            if(result != null) {
+                              setState(() {
+                                _titleController.text = _resultMap?['title'];
+                                viewModel.setTitle(_resultMap?['title']);
+                                viewModel.setUrl(_resultMap?['videoUrl']);
+                                print('${_resultMap?['videoUrl']}');
+                              });
+                            }
+                          }
+                        },
                         focusNode: _titleFocusNode,
                         controller: _titleController,
                         keyboardType: TextInputType.multiline,
@@ -524,15 +539,16 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
                       await viewModel.saveTask(
                         taskType: TaskType.todo,
                         tag: viewModel.selectedTag,
+                        url: viewModel.url,
                       );
                       print('저장 성공. 파이어스토어 체크해보기');
-                      if (mounted) Navigator.pop(context);
+                      if (mounted) Navigator.pop(context, true);
                     } else if (widget.type == TeeklePageType.addWorkout) {
                       await viewModel.saveTask(
                         taskType: TaskType.workout,
                         tag: viewModel.selectedTag,
                       );
-                      if (mounted) Navigator.pop(context);
+                      if (mounted) Navigator.pop(context, true);
                     } else if (widget.type == TeeklePageType.editTodo ||
                         widget.type == TeeklePageType.editWorkout) {
                       bool success = await viewModel.updateTask(
@@ -545,7 +561,7 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('수정되었습니다')),
                         );
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       }
                     }
                   }

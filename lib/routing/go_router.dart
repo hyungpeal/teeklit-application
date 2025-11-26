@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:teeklit/login/account/password_edit.dart';
-import 'package:teeklit/login/account/profile_edit.dart';
 import 'package:teeklit/login/find_account_screen.dart';
 import 'package:teeklit/login/login_screen.dart';
 import 'package:teeklit/login/signup_email.dart';
@@ -18,10 +18,19 @@ import 'package:teeklit/ui/home/home_page.dart';
 import 'package:teeklit/ui/home/navigation_view.dart';
 import 'package:teeklit/domain/model/enums.dart';
 import 'package:teeklit/ui/mypage/delete_account_screen.dart';
+import 'package:teeklit/ui/mypage/widgets/account_setting.dart';
+import 'package:teeklit/ui/mypage/widgets/alert_setting.dart';
 import 'package:teeklit/ui/mypage/widgets/mypage.dart';
+import 'package:teeklit/ui/mypage/widgets/notice_list.dart';
+import 'package:teeklit/ui/mypage/widgets/public_data_source.dart';
+import 'package:teeklit/ui/mypage/widgets/terms_policy.dart';
 import 'package:teeklit/ui/teekle/widgets/teekle_main.dart';
 import 'package:teeklit/ui/teekle/widgets/teekle_setting_page.dart';
 import 'package:teeklit/ui/teekle/widgets/teekle_select_workout.dart';
+
+import '../domain/model/task.dart';
+import '../domain/model/teekle.dart';
+import '../ui/mypage/widgets/profile_edit.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -94,8 +103,13 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const PasswordEditScreen(),
     ),
 
+    // GoRoute(
+    //   path: '/profile-image-edit',
+    //   builder: (context, state) => const ProfileEditScreen(),
+    // ),
+
     GoRoute(
-      path: '/profile-image-edit',
+      path: '/profile-edit',
       builder: (context, state) => const ProfileEditScreen(),
     ),
 
@@ -103,6 +117,27 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/delete-account',
       builder: (context, state) => const DeleteAccountScreen(),
+    ),
+
+    GoRoute(
+      path: '/alert-setting',
+      builder: (context, state) => const AlertSettingScreen(),
+    ),
+    GoRoute(
+      path: '/account-setting',
+      builder: (context, state) => const AccountSettingsScreen(),
+    ),
+    GoRoute(
+      path: '/notice-list',
+      builder: (context, state) => const NoticeListScreen(),
+    ),
+    GoRoute(
+      path: '/terms-policy',
+      builder: (context, state) => const TermsPolicyScreen(),
+    ),
+    GoRoute(
+      path: '/public-data-source',
+      builder: (context, state) => const PublicDataSourceScreen(),
     ),
 
     ShellRoute(
@@ -152,9 +187,17 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/teekle/editTodo',
       name: 'teekleEditTodo',
-      builder: (context, state) => const TeekleSettingPage(
-        type: TeeklePageType.editTodo,
-      ),
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        final teekle = data['teekle'] as Teekle;
+        final task = data['task'] as Task;
+
+        return TeekleSettingPage(
+          type: TeeklePageType.editTodo,
+          teekleToEdit: teekle,
+          originalTask: task,
+        );
+      },
     ),
     GoRoute(
       path: '/teekle/addWorkout',
@@ -166,9 +209,17 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/teekle/editWorkout',
       name: 'teekleEditWorkout',
-      builder: (context, state) => const TeekleSettingPage(
-        type: TeeklePageType.editWorkout,
-      ),
+      builder:(context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        final teekle = data['teekle'] as Teekle;
+        final task = data['task'] as Task;
+
+        return TeekleSettingPage(
+          type: TeeklePageType.editWorkout,
+          teekleToEdit: teekle,
+          originalTask: task,
+        );
+      },
     ),
     GoRoute(
       path: '/teekle/selectWorkout',

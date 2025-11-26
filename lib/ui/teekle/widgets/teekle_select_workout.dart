@@ -42,7 +42,6 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
 
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      print('100 이하');
       _loadData();
     }
   }
@@ -56,6 +55,7 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
         : videos;
 
     return Scaffold(
+      backgroundColor: AppColors.bg,
       appBar: AppBar(
         backgroundColor: AppColors.bg,
         leading: IconButton(

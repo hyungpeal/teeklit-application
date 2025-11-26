@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 import 'package:teeklit/ui/mypage/widgets/alert_setting.dart';
@@ -63,13 +64,8 @@ class MyPageScreen extends StatelessWidget {
                 remainingMoves: teekleProvider.remainingCount,
                 completedMoves: teekleProvider.doneCount,
                 onEdit: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ProfileEditScreen(),
-                    ),
-                  );
-                },
+                  context.push('/profile-edit');
+                }
               ),
               const SizedBox(height: 32),
 
@@ -90,23 +86,13 @@ class MyPageScreen extends StatelessWidget {
               _MenuItem(
                 title: '알림 설정',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AlertSettingScreen(),
-                    ),
-                  );
+                  context.push('/alert-setting');
                 },
               ),
               _MenuItem(
                 title: '계정 설정',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AccountSettingsScreen(),
-                    ),
-                  );
+                  context.push('/account-setting');
                 },
               ),
 
@@ -125,34 +111,19 @@ class MyPageScreen extends StatelessWidget {
               _MenuItem(
                 title: '공지사항',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NoticeListScreen(),
-                    ),
-                  );
+                  context.push('/notice-list');
                 },
               ),
               _MenuItem(
                 title: '약관 및 정책',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TermsPolicyScreen(),
-                    ),
-                  );
+                  context.push('/terms-policy');
                 },
               ),
               _MenuItem(
                 title: '공공데이터 출처',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const PublicDataSourceScreen(),
-                    ),
-                  );
+                  context.push('/public-data-source');;
                 },
               ),
             ],

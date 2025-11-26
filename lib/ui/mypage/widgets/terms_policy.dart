@@ -39,7 +39,7 @@ class TermsPolicyScreen extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (_) => const TermsDetailScreen(
                     title: '서비스 이용약관',
-                    fileName: 'terms_service.txt',
+                    fileName: 'service_terms.md',
                   ),
                 ),
               );
@@ -49,14 +49,14 @@ class TermsPolicyScreen extends StatelessWidget {
           const Divider(color: Color(0xff2C2C2E), height: 1),
 
           _TermsItem(
-            title: '운영정책',
+            title: '개인 정보 처리 방침',
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => const TermsDetailScreen(
-                    title: '운영정책',
-                    fileName: 'terms_operation.txt',
+                    title: '개인 정보 처리 방침',
+                    fileName: 'privacy_policy.md',
                   ),
                 ),
               );
