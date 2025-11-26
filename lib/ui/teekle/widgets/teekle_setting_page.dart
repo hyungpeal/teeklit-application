@@ -526,13 +526,13 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
                         tag: viewModel.selectedTag,
                       );
                       print('저장 성공. 파이어스토어 체크해보기');
-                      if (mounted) Navigator.pop(context);
+                      if (mounted) Navigator.pop(context, true);
                     } else if (widget.type == TeeklePageType.addWorkout) {
                       await viewModel.saveTask(
                         taskType: TaskType.workout,
                         tag: viewModel.selectedTag,
                       );
-                      if (mounted) Navigator.pop(context);
+                      if (mounted) Navigator.pop(context, true);
                     } else if (widget.type == TeeklePageType.editTodo ||
                         widget.type == TeeklePageType.editWorkout) {
                       bool success = await viewModel.updateTask(
@@ -545,7 +545,7 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('수정되었습니다')),
                         );
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       }
                     }
                   }

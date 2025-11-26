@@ -648,7 +648,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
             ),
             Positioned(
               right: 16,
-              bottom: 120,
+              bottom: 96,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
