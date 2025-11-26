@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:teeklit/data/repositories/repository_task.dart';
@@ -396,12 +397,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
   void _onAddTodo() async {
     _toggleFabMenu();
 
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const TeekleSettingPage(type: TeeklePageType.addTodo),
-      ),
-    );
+    final result = await context.pushNamed<bool>('teekleAddTodo') ?? false;
 
     if (result == true) {
       _loadTeeklesForMonth(selectedDay);
@@ -411,14 +407,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
   void _onAddExercise() async {
     _toggleFabMenu();
 
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const TeekleSettingPage(
-          type: TeeklePageType.addWorkout,
-        ),
-      ),
-    );
+    final result = await context.pushNamed<bool>('teekleAddWorkout') ?? false;
 
     if (result == true) {
       _loadTeeklesForMonth(selectedDay);
@@ -678,20 +667,21 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
                                   teekle.taskId,
                                 );
 
-                                final result = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => TeekleSettingPage(
-                                      type: teekle.type == TaskType.todo
-                                          ? TeeklePageType.editTodo
-                                          : TeeklePageType.editWorkout,
-                                      teekleToEdit: teekle,
-                                      originalTask: task,
-                                    ),
-                                  ),
-                                );
+                                final routeName = teekle.type == TaskType.todo
+                                    ? 'teekleEditTodo'
+                                    : 'teekleEditWorkout';
+
+                                final result = await context.pushNamed<bool>(
+                                  routeName,
+                                  extra: {
+                                    'teekle': teekle,
+                                    'task': task,
+                                  },
+                                ) ?? false;
+
 
                                 if (result == true) {
+                                  print('수정후');
                                   _loadTeeklesForMonth(selectedDay);
                                 }
                               },
@@ -774,7 +764,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
             ),
             Positioned(
               right: 16,
-              bottom: 120,
+              bottom: 96,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,

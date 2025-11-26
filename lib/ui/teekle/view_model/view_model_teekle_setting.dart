@@ -41,6 +41,8 @@ class TeekleSettingViewModel extends ChangeNotifier {
   ///태그 설정
   String? _selectedTag;
 
+  String? _url;
+
   TeekleSettingViewModel({DateTime? initDate, DateTime? initAlarmTime})
     : _selectedDate = initDate ?? DateTime.now(),
       _selectedAlarmTime = initAlarmTime ?? DateTime.now(),
@@ -73,6 +75,8 @@ class TeekleSettingViewModel extends ChangeNotifier {
   /// 태그 getter
   String? get selectedTag => _selectedTag;
 
+  String? get url => _url;
+
   ///=============== 상태 변경 메서드 : setter ===============
   /// 투두/운동 이름 설정
   void setTitle(String newTitle) {
@@ -90,6 +94,11 @@ class TeekleSettingViewModel extends ChangeNotifier {
   void setAlarm(bool alarmStatus, DateTime newTime) {
     _hasAlarm = alarmStatus;
     _selectedAlarmTime = newTime;
+    notifyListeners();
+  }
+
+  void setUrl(String url) {
+    _url = url;
     notifyListeners();
   }
 
@@ -149,12 +158,14 @@ class TeekleSettingViewModel extends ChangeNotifier {
 
     ///태그 설정
     _selectedTag = null;
+    _url = null;
     notifyListeners();
   }
 
   Future<bool> saveTask({
     required TaskType taskType,
     required String? tag,
+    String? url,
   }) async {
     // _isLoading = true;
     notifyListeners();
@@ -183,7 +194,8 @@ class TeekleSettingViewModel extends ChangeNotifier {
           hasNoti: _hasAlarm,
           notiTime: _hasAlarm ? _selectedAlarmTime : null,
         ),
-        url: null,
+        url: url,
+        userId: 'test2',
       );
 
       /// Task를 Repository를 통해 DB에 저장
@@ -532,6 +544,7 @@ class TeekleSettingViewModel extends ChangeNotifier {
         _hasRepeat != originalTask.repeat.hasRepeat ||
         _repeatUnit != originalTask.repeat.unit ||
         _interval != originalTask.repeat.interval ||
+            _selectedDate != originalTask.startDate ||
         _repeatEndDate != originalTask.endDate ||
         !_listsEqual(_selectedDaysOfWeek, originalTask.repeat.daysOfWeek);
     bool alarmChanged = _hasAlarm != originalTask.noti.hasNoti;
