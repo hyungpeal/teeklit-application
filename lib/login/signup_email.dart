@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
@@ -50,12 +51,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     // ⭐ SignupInfo 생성 (email만 먼저 담는다)
     final info = SignupInfo(email: email);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SignupPasswordScreen(info: info),
-      ),
-    );
+    context.push('/signup-password', extra: info);
+
   }
 
   @override

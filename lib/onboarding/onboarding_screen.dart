@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../ui/core/themes/colors.dart';
+import 'package:go_router/go_router.dart';
+
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -73,7 +75,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     vertical: 14,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  context.go('/login');
+                },
                 child: const Text(
                   "지금 함께해요!",
                   style: TextStyle(
@@ -103,7 +107,7 @@ class OnboardingPage1 extends StatelessWidget {
       children: [
         /// 이미지 (위쪽 고정)
         Positioned(
-          top: 170,
+          top: MediaQuery.of(context).size.height * 0.20,
           left: 0,
           right: 0,
           child: Container(
@@ -111,10 +115,10 @@ class OnboardingPage1 extends StatelessWidget {
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF97A985).withOpacity(0.6),
-                  offset: const Offset(0, 4),
+                  color: const Color(0xFF97A985).withOpacity(0.2),
+                  offset: const Offset(0, 2),
                   blurRadius: 70,
-                  spreadRadius: 5,
+                  spreadRadius: 3,
                 ),
               ],
             ),
@@ -123,7 +127,7 @@ class OnboardingPage1 extends StatelessWidget {
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.80,
               child: Image.asset(
-                "assets/Images/Onboarding1.png",
+                "assets/images/Onboarding1.png",
                 fit: BoxFit.contain,
               ),
             ),
@@ -168,7 +172,7 @@ class OnboardingPage2 extends StatelessWidget {
           left: 0,
           right: 0,
           child: Image.asset(
-            "assets/Images/Onboarding2.png",
+            "assets/images/Onboarding2.png",
             width: 360,
             fit: BoxFit.contain,
           ),
@@ -212,7 +216,7 @@ class OnboardingPage3 extends StatelessWidget {
           left: 0,
           right: 0,
           child: Image.asset(
-            "assets/Images/Onboarding3.png",
+            "assets/images/Onboarding3.png",
             width: 360,
             fit: BoxFit.contain,
           ),

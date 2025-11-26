@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,6 +15,7 @@ import '../ui/core/themes/colors.dart';
 import 'auth_service.dart';
 import 'signup_email_verify_screen.dart';
 import 'signup_info.dart';
+import 'package:go_router/go_router.dart';
 
 
 class SignupProfileScreen extends StatefulWidget {
@@ -245,21 +247,16 @@ class _SignupProfileScreenState extends State<SignupProfileScreen> {
                 );
 
                 // 6) 로그인 화면으로 이동하거나 자동 로그인 처리
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SignupEmailVerifyScreen(email: info.email),
-                  ),
-                );
+                context.push('/signup-email-verify', extra: info);
+
 
               } on FirebaseAuthException catch (e) {
+                print("🔥 FirebaseAuthException code: ${e.code}");
+                print("🔥 FirebaseAuthException message: ${e.message}");
+
                 final msg = AuthService.instance.getErrorMessage(e);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(msg)),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("알 수 없는 오류가 발생했습니다.")),
                 );
               }
             },

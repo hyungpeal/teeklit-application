@@ -1,22 +1,24 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-
-// 🔹 인증 확인용 Firebase
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:teeklit/login/signup_info.dart';
+import 'package:go_router/go_router.dart';
 
 import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
+import 'app_router.dart';
 
 class SignupEmailVerifyScreen extends StatefulWidget {
-  final String email;
+  final SignupInfo info;
 
   const SignupEmailVerifyScreen({
     super.key,
-    required this.email,
+    required this.info,
   });
 
   @override
-  State<SignupEmailVerifyScreen> createState() => _SignupEmailVerifyScreenState();
+  State<SignupEmailVerifyScreen> createState() =>
+      _SignupEmailVerifyScreenState();
 }
 
 class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
@@ -25,24 +27,32 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
   /// 🔥 5초마다 인증 상태 자동 체크
   void _startAutoCheck() {
     _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
-      final user = FirebaseAuth.instance.currentUser;
+      try {
+        final user = FirebaseAuth.instance.currentUser;
 
-      if (user == null) return;
+        if (user == null) {
+          print("❌ AutoCheck Error: user == null");
+          return;
+        }
 
-      await user.reload();
-      final refreshedUser = FirebaseAuth.instance.currentUser;
+        await user.reload();
 
-      if (refreshedUser != null && refreshedUser.emailVerified) {
-        if (!mounted) return;
+        final refreshedUser = FirebaseAuth.instance.currentUser;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("이메일 인증이 완료되었습니다.")),
-        );
+        if (refreshedUser != null && refreshedUser.emailVerified) {
+          if (!mounted) return;
 
-        _timer?.cancel();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("이메일 인증이 완료되었습니다.")),
+          );
 
-        // 🔥 인증 완료 → 홈페이지 혹은 다음 화면 이동
-        Navigator.pushReplacementNamed(context, '/home');
+          _timer?.cancel();
+          context.go('/home', extra: widget.info);
+        }
+      } on FirebaseAuthException catch (e) {
+        print("❌ AutoCheck FirebaseAuthException: ${e.code} / ${e.message}");
+      } catch (e) {
+        print("❌ AutoCheck Unknown Error: $e");
       }
     });
   }
@@ -50,8 +60,6 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
   @override
   void initState() {
     super.initState();
-
-    // 🔥 자동 감지 시작
     _startAutoCheck();
   }
 
@@ -61,30 +69,38 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
     super.dispose();
   }
 
-  /// 버튼 누를 때 수동 확인
+  /// 🔍 수동 인증 체크
   Future<void> _checkEmailVerified() async {
-    final user = FirebaseAuth.instance.currentUser;
+    try {
+      final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("로그인 정보가 올바르지 않습니다.")),
-      );
-      return;
-    }
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("로그인 정보가 올바르지 않습니다.")),
+        );
+        print("❌ CheckEmailVerified Error: user == null");
+        return;
+      }
 
-    await user.reload();
-    final refreshedUser = FirebaseAuth.instance.currentUser;
+      await user.reload();
+      final refreshedUser = FirebaseAuth.instance.currentUser;
 
-    if (refreshedUser != null && refreshedUser.emailVerified) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("이메일 인증이 완료되었습니다.")),
-      );
+      if (refreshedUser != null && refreshedUser.emailVerified) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("이메일 인증이 완료되었습니다.")),
+        );
 
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("아직 인증이 완료되지 않았습니다.")),
-      );
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("아직 인증이 완료되지 않았습니다.")),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      // 🔥 Firebase 오류 상세 출력
+      print("❌ CheckEmailVerified FirebaseAuthException: ${e.code} / ${e.message}");
+    } catch (e) {
+      print("❌ CheckEmailVerified Unknown Error: $e");
     }
   }
 
@@ -100,7 +116,8 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.chevron_left, color: AppColors.strokeGray, size: 28),
+          icon: Icon(Icons.chevron_left,
+              color: AppColors.strokeGray, size: 28),
         ),
       ),
 
@@ -195,8 +212,10 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
 
             const SizedBox(height: 6),
 
+            /// ⚠️ 원래 widget.info.email 처럼 이메일 값을 넣어야 함.
+            ///    widget.info 자체를 String으로 캐스팅하면 오류 가능.
             Text(
-              widget.email,
+              widget.info.email,
               style: const TextStyle(
                 fontFamily: 'Paperlogy',
                 fontWeight: FontWeight.w600,

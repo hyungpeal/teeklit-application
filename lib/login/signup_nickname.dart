@@ -8,6 +8,7 @@ import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
 import 'signup_info.dart';
 import 'signup_profile_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class SignupNicknameScreen extends StatefulWidget {
   final SignupInfo info;   // ⭐ email + password 들어 있음
@@ -49,12 +50,7 @@ class _SignupNicknameScreenState extends State<SignupNicknameScreen> {
     // ⭐ info에 nickname 추가
     final updatedInfo = widget.info.copyWith(nickname: nickname);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SignupProfileScreen(info: updatedInfo),
-      ),
-    );
+    context.push('/signup-profile', extra: updatedInfo);
   }
 
   @override
@@ -148,7 +144,9 @@ class _SignupNicknameScreenState extends State<SignupNicknameScreen> {
           onPressed: isButtonEnabled ? _onNext : null,
           style: ElevatedButton.styleFrom(
             backgroundColor:
-            isButtonEnabled ? const Color(0xFFB1C39F) : const Color(0xFF8C8C8C),
+            isButtonEnabled
+                ? AppColors.darkGreen
+                : AppColors.txtGray,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teeklit/ui/core/themes/colors.dart';
 
 class ProgressCard extends StatelessWidget {
   final String day;
@@ -17,7 +18,7 @@ class ProgressCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF252525),
+        color: AppColors.roundboxDarkBg,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -32,23 +33,24 @@ class ProgressCard extends StatelessWidget {
                       color: Colors.white,
                       fontFamily: 'Paperlogy',
                       fontWeight: FontWeight.w700,
+                      fontSize: 15,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Container(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3A3A3A),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: const Text(
-                        '공유하러 가기',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 13,
-                        ),
-                      ))
+                  // Container(
+                  //     padding:
+                  //     const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  //     decoration: BoxDecoration(
+                  //       color: const Color(0xFF3A3A3A),
+                  //       borderRadius: BorderRadius.circular(999),
+                  //     ),
+                  //     child: const Text(
+                  //       '공유하러 가기',
+                  //       style: TextStyle(
+                  //         color: Colors.white70,
+                  //         fontSize: 13,
+                  //       ),
+                  //     ))
                 ],
               )),
           const SizedBox(width: 16),
