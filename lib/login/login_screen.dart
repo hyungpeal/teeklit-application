@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:go_router/go_router.dart';
+import '../login/app_router.dart';
+import '../login/signup_info.dart';
 
 import '../ui/core/themes/colors.dart';
 import 'login_style.dart';
@@ -61,16 +64,23 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("아이디 / 비밀번호 찾기", style: LoginStyle.captionStyle),
+                  GestureDetector(
+                    onTap: () {
+                      context.push('/find-account');  // 비밀번호 찾기
+                    },
+                    child: Text(
+                      "아이디 / 비밀번호 찾기",
+                      style: LoginStyle.captionStyle,
+                    ),
+                  ),
+
                   const SizedBox(width: 12),
                   Text("|", style: LoginStyle.captionStyle),
                   const SizedBox(width: 12),
+
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => SignupTermsScreen()),
-                      );
+                      context.push('/signup-terms');   // ⬅ 이메일 가입하기 (회원가입 시작)
                     },
                     child: Text(
                       "이메일 가입하기",
@@ -81,6 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
+
 
               const SizedBox(height: 32),
 
@@ -190,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       // 4) 인증 완료 → 홈 이동
-      Navigator.pushReplacementNamed(context, '/home');
+      context.go('/home');
     } on FirebaseAuthException catch (e) {
       String message = "로그인 실패";
 

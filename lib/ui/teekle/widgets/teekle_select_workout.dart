@@ -90,102 +90,110 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
                   video.videoUrl,
                 );
 
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: AppColors.txtGray),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context, {
+                      'title': video.title,
+                      'videoUrl': video.videoUrl,
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: AppColors.txtGray),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: Image.network(
-                            'https://img.youtube.com/vi/$videoId/hqdefault.jpg',
-                            fit: BoxFit.cover,
-                            width: 160,
-                            height: 90,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                width: 160,
-                                height: 90,
-                                color: Colors.grey[800],
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.broken_image,
-                                    color: Colors.white54,
-                                    size: 32,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Image.network(
+                              'https://img.youtube.com/vi/$videoId/hqdefault.jpg',
+                              fit: BoxFit.cover,
+                              width: 160,
+                              height: 90,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 160,
+                                  height: 90,
+                                  color: Colors.grey[800],
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      color: Colors.white54,
+                                      size: 32,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0),
-                              child: Text(
-                                videos[index].title,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Paperlogy',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
+                        const SizedBox(width: 12),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 6.0),
+                                child: Text(
+                                  videos[index].title,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Paperlogy',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 6.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      launchUrl(
-                                        Uri.parse(videos[index].videoUrl),
-                                      );
-                                    },
-                                    child: SvgPicture.asset(
-                                      'assets/icons/flowbite_link-outline.svg',
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6.0,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        launchUrl(
+                                          Uri.parse(videos[index].videoUrl),
+                                        );
+                                      },
+                                      child: SvgPicture.asset(
+                                        'assets/icons/flowbite_link-outline.svg',
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (isBookmarked) {
-                                          _bookmarkedVideoUrls.remove(
-                                            video.videoUrl,
-                                          );
-                                        } else {
-                                          _bookmarkedVideoUrls.add(
-                                            video.videoUrl,
-                                          );
-                                        }
-                                      });
-                                    },
-                                    child: SvgPicture.asset(
-                                      isBookmarked
-                                          ? 'assets/icons/bookmark.svg'
-                                          : 'assets/icons/bookmark_uncheck.svg',
+                                    const SizedBox(width: 4.0),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (isBookmarked) {
+                                            _bookmarkedVideoUrls.remove(
+                                              video.videoUrl,
+                                            );
+                                          } else {
+                                            _bookmarkedVideoUrls.add(
+                                              video.videoUrl,
+                                            );
+                                          }
+                                        });
+                                      },
+                                      child: SvgPicture.asset(
+                                        isBookmarked
+                                            ? 'assets/icons/bookmark.svg'
+                                            : 'assets/icons/bookmark_uncheck.svg',
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

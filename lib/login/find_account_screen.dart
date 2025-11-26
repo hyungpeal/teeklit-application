@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 
 import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
-import 'signup_info.dart';
-import 'signup_password_screen.dart';
 
-// ⭐ info 구조 사용
-
-// ⭐ 패스워드로 info 넘김
-
-class SignupEmailScreen extends StatefulWidget {
-  const SignupEmailScreen({super.key});
+class FindAccountScreen extends StatefulWidget {
+  const FindAccountScreen({super.key});
 
   @override
-  State<SignupEmailScreen> createState() => _SignupEmailScreenState();
+  State<FindAccountScreen> createState() => _FindAccountScreenState();
 }
 
-class _SignupEmailScreenState extends State<SignupEmailScreen> {
+class _FindAccountScreenState extends State<FindAccountScreen> {
   final TextEditingController _emailController = TextEditingController();
-  bool isNextEnabled = false;
+  bool isButtonEnabled = false;
 
   @override
   void dispose() {
@@ -34,11 +29,11 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
 
   void _checkValid(String text) {
     setState(() {
-      isNextEnabled = isValidEmail(text);
+      isButtonEnabled = isValidEmail(text);
     });
   }
 
-  void _goNext() {
+  Future<void> _sendResetEmail() async {
     final email = _emailController.text.trim();
 
     if (!isValidEmail(email)) {
@@ -48,11 +43,21 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
       return;
     }
 
-    // ⭐ SignupInfo 생성 (email만 먼저 담는다)
-    final info = SignupInfo(email: email);
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
 
-    context.push('/signup-password', extra: info);
+      if (!mounted) return;
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("$email 로 비밀번호 재설정 메일을 보냈습니다.")),
+      );
+
+      context.pop(); // 로그인 화면으로 복귀
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("전송 실패: $e")),
+      );
+    }
   }
 
   @override
@@ -65,21 +70,26 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           icon: Icon(
             Icons.chevron_left,
-            size: 28,
+            size: 20,
             color: AppColors.strokeGray,
           ),
         ),
+        title: Text(
+          "아이디 / 비밀번호 찾기",
+          style: AppText.H1.copyWith(color: Colors.white),
+        ),
+        centerTitle: false,
       ),
 
       bottomNavigationBar: SizedBox(
         height: 80,
         child: ElevatedButton(
-          onPressed: isNextEnabled ? _goNext : null,
+          onPressed: isButtonEnabled ? _sendResetEmail : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isNextEnabled
+            backgroundColor: isButtonEnabled
                 ? AppColors.darkGreen
                 : AppColors.txtGray,
             elevation: 0,
@@ -88,7 +98,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
             ),
           ),
           child: Text(
-            "다음",
+            "비밀번호 재설정 메일 보내기",
             style: AppText.Button.copyWith(
               fontSize: 18,
               color: Colors.white,
@@ -108,7 +118,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: "가입하실 ",
+                    text: "가입하신 ",
                     style: TextStyle(
                       fontFamily: 'Paperlogy',
                       fontSize: 22,
@@ -179,3 +189,4 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     );
   }
 }
+

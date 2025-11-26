@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../ui/core/themes/colors.dart';
 import 'signup_info.dart';
 import 'signup_nickname.dart';
+import 'package:go_router/go_router.dart';
 
 class SignupPasswordScreen extends StatefulWidget {
   final SignupInfo info;   // ⭐ 이메일 포함됨
@@ -19,6 +20,16 @@ class SignupPasswordScreen extends StatefulWidget {
 class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
   final TextEditingController _pwController = TextEditingController();
   final TextEditingController _pwConfirmController = TextEditingController();
+  bool isButtonEnabled = false;
+
+  void _validate() {
+    final pw = _pwController.text.trim();
+    final pw2 = _pwConfirmController.text.trim();
+
+    setState(() {
+      isButtonEnabled = pw.isNotEmpty && pw2.isNotEmpty && pw == pw2;
+    });
+  }
 
   @override
   void dispose() {
@@ -49,12 +60,7 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
     /// ⭐ info에 password 추가
     final updatedInfo = widget.info.copyWith(password: pw);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SignupNicknameScreen(info: updatedInfo),
-      ),
-    );
+    context.push('/signup-nickname', extra: updatedInfo);
   }
 
   void _showMsg(String msg) {
@@ -85,9 +91,10 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
         height: 80,
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: _onNextPressed,
+          onPressed: isButtonEnabled ? _onNextPressed : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF8C8C8C),
+            backgroundColor:
+            isButtonEnabled ? AppColors.darkGreen : AppColors.txtGray,
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
@@ -160,6 +167,7 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
   }) {
     return TextField(
       controller: controller,
+      onChanged: (_) => _validate(),   // ← ★ 이 한 줄 중요
       obscureText: true,
       decoration: InputDecoration(
         hintText: hint,
@@ -187,3 +195,4 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
     );
   }
 }
+

@@ -24,15 +24,24 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseFirestore.instance
-      .collection('test')
-      .get()
-      .then((snapshot) {
-        print('🔥 Firestore 연결 성공! 문서 개수: ${snapshot.docs.length}');
-      })
-      .catchError((e) {
-        print('🔥 Firestore 연결 실패: $e');
-      });
+  // 🔥 세로 고정
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  FirebaseFirestore.instance.collection('test').get().then((snapshot) {
+    print('🔥 Firestore 연결 성공! 문서 개수: ${snapshot.docs.length}');
+  }).catchError((e) {
+    print('🔥 Firestore 연결 실패: $e');
+  });
+
+
+  FirebaseFirestore.instance.collection('test').get().then((snapshot) {
+    print('🔥 Firestore 연결 성공! 문서 개수: ${snapshot.docs.length}');
+  }).catchError((e) {
+    print('🔥 Firestore 연결 실패: $e');
+  });
 
   runApp(
     MultiProvider(
@@ -45,38 +54,16 @@ void main() async {
   );
 }
 
+
 class Teeklit extends StatelessWidget {
   const Teeklit({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/mypage',
-
-      routes: {
-        '/mypage': (context) => const MyPageScreen(),
-        '/login': (context) => const LoginScreen(),
-      },
-
-      locale: const Locale('ko', 'KR'),
-
-      supportedLocales: const [
-        Locale('ko', 'KR'),
-        Locale('en', 'US'),
-      ],
-
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-
+    return MaterialApp.router(
+      routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
-      title: 'Teeklit',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF121212),
-      ),
-      home: const MyPageScreen(),
+      theme: ThemeData(fontFamily: 'Paperlogy'),
     );
   }
 }
