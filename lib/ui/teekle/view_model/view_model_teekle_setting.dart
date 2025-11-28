@@ -516,7 +516,7 @@ class TeekleSettingViewModel extends ChangeNotifier {
       /// 선택한 날짜 포함 이후의 teekle 삭제 (isDone=false만)
       await _teekleRepository.deleteTeeklesFromDateByTaskId(
         taskId: originalTask.taskId,
-        fromDate: _selectedDate,
+        fromDate: originalTeekle.execDate,
       );
 
       /// 새로운 Task DB 저장
