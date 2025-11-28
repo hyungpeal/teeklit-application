@@ -24,7 +24,6 @@ class ViewWriteCommentSection extends StatefulWidget {
 class ViewWriteCommentSectionState extends State<ViewWriteCommentSection> {
   final TextEditingController _commentController = TextEditingController();
 
-  /// 댓글 작성 함수 TODO callback 함수 내려서 전달해주기
   void writeComment() {
     widget.vmCommentWrite(_commentController.text, widget.parentId);
     _commentController.clear();

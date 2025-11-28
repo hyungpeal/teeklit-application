@@ -4,30 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:teeklit/domain/model/community/modify_image.dart';
+import 'package:teeklit/domain/model/community/posts.dart';
 import 'package:teeklit/ui/community/view_model/community_view_model.dart';
+import 'package:teeklit/ui/community/widgets/post_modify_page/modify_app_bar.dart';
+import 'package:teeklit/ui/community/widgets/post_modify_page/modify_media_section.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
-import 'package:teeklit/ui/community/widgets/post_write_page/write_app_bar.dart';
 import 'package:teeklit/ui/community/widgets/community_custom_buttons.dart';
 import 'package:teeklit/ui/community/widgets/post_write_page/write_custom_text_form_field.dart';
 import 'package:teeklit/ui/community/widgets/post_write_page/write_category_section.dart';
-import 'package:teeklit/ui/community/widgets/post_write_page/write_media_section.dart';
 
-class CommunityPostWritePage extends StatefulWidget {
-  const CommunityPostWritePage({super.key});
+class CommunityPostModifyPage extends StatefulWidget {
+  const CommunityPostModifyPage({super.key});
 
   @override
-  State<CommunityPostWritePage> createState() => _CommunityPostWritePageState();
+  State<CommunityPostModifyPage> createState() => _CommunityPostModifyPageState();
 }
 
-class _CommunityPostWritePageState extends State<CommunityPostWritePage> {
+class _CommunityPostModifyPageState extends State<CommunityPostModifyPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _contentsController = TextEditingController();
 
-  late double bottomPadding = MediaQuery.paddingOf(context).bottom;
+  late Posts post = context.read<CommunityViewModel>().post;
 
-  final List<File> _images = [];
+  List<ModifyImage> _images = [];
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImages() async {
@@ -35,10 +37,25 @@ class _CommunityPostWritePageState extends State<CommunityPostWritePage> {
 
     if (picked.isNotEmpty) {
       setState(() {
-        // _images.addAll(picked);
-        _images.addAll(picked.map((xfile) => File(xfile.path)).toList());
+        _images.addAll(
+          picked.map((xfile) => ModifyImage.fromFile(File(xfile.path))),
+        );
       });
     }
+  }
+
+  void _loadPage() {
+    _titleController.text = post.postTitle;
+    _categoryController.text = post.category;
+    _contentsController.text = post.postContents;
+    _images = post.imgUrls.map((url) => ModifyImage.fromUrl(url)).toList();
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPage();
   }
 
   @override
@@ -56,8 +73,9 @@ class _CommunityPostWritePageState extends State<CommunityPostWritePage> {
       final category = _categoryController.text;
       final postContents = _contentsController.text;
 
-      context.read<CommunityViewModel>().addPost(postTitle, postContents, category, _images);
-      
+      context.read<CommunityViewModel>().modifyPost(postTitle, postContents, category, _images);
+
+      /// TODO 이동 시, 메인 페이지 초기화
       context.go('/community');
     }
   }
@@ -67,11 +85,11 @@ class _CommunityPostWritePageState extends State<CommunityPostWritePage> {
 
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: WriteAppBar(
+      appBar: ModifyAppBar(
         actions: [
           CustomTextButton(
             buttonText: Text(
-              '저장',
+              '수정하기',
               style: TextStyle(
                 fontWeight: FontWeight.w300,
                 fontSize: 14,
@@ -130,7 +148,7 @@ class _CommunityPostWritePageState extends State<CommunityPostWritePage> {
               ),
             ),
 
-            WriteMediaSection(
+            ModifyMediaSection(
                 onPickImages: _pickImages,
                 images: _images,
               onRemoveImage: (img) {

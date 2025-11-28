@@ -50,6 +50,7 @@ class Comments {
       'createAt': createAt,
       'parentId': parentId,
       'commentLike': commentLike,
+      'isHided': false,
     };
   }
 }

@@ -1,17 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:teeklit/domain/model/community/modify_image.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 import 'package:teeklit/ui/community/widgets/community_custom_buttons.dart';
 
 /// 글쓰기 페이지 하단 미디어 버튼 BottomSheet
-class WriteMediaSection extends StatelessWidget {
+class ModifyMediaSection extends StatelessWidget {
   final VoidCallback onPickImages;
-  final List<File> images;
-  final Function(File) onRemoveImage;
+  final List<ModifyImage> images;
+  final Function(XFile) onRemoveImage;
 
   /// 글쓰기 페이지 하단에 미디어 버튼을 고정시켜 배치함.
-  const WriteMediaSection({
+  const ModifyMediaSection({
     super.key,
     required this.onPickImages,
     required this.images,
@@ -39,20 +41,27 @@ class WriteMediaSection extends StatelessWidget {
                   return Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.file(
-                          img,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        ),
+                          borderRadius: BorderRadius.circular(10),
+                          child: img.file != null
+                              ? Image.file(
+                            img.file!,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          )
+                              : Image.network(
+                            img.url!,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          )
                       ),
 
                       Positioned(
                         right: 0,
                         top: 0,
                         child: GestureDetector(
-                          onTap: () => onRemoveImage(img),
+                          onTap: () => images.remove(img),
                           child: const CircleAvatar(
                             radius: 10,
                             backgroundColor: Colors.black54,

@@ -12,10 +12,12 @@ class ViewFooterCommentContentsSection extends StatefulWidget {
   final User userInfo;
   final String userId;
   final bool isAdmin;
+  final String myId;
   final Function(String?) onReply;
   final Future<void> Function() blockUser;
   final Future<bool> Function(String, String, String) reportPost;
   final Future<void> Function(String) hideComment;
+  final Future<void> Function(String) deleteComment;
 
   /// 댓글 보여주는 위젯
   const ViewFooterCommentContentsSection({
@@ -28,6 +30,8 @@ class ViewFooterCommentContentsSection extends StatefulWidget {
     required this.hideComment,
     required this.userId,
     required this.isAdmin,
+    required this.myId,
+    required this.deleteComment,
   });
 
   @override
@@ -84,7 +88,7 @@ class _ViewFooterCommentContentsSectionState
                         fontSize: 14,
                       ),
                     ),
-                    callback: () async{
+                    callback: () async {
                       await widget.reportPost(
                         commentId,
                         TargetType.comment.value.toString(),
@@ -110,7 +114,7 @@ class _ViewFooterCommentContentsSectionState
                         fontSize: 14,
                       ),
                     ),
-                    callback: () async{
+                    callback: () async {
                       await widget.blockUser();
                       Navigator.pop(context);
 
@@ -120,7 +124,7 @@ class _ViewFooterCommentContentsSectionState
                     },
                   ),
                 ),
-                if(widget.isAdmin)...[
+                if (widget.isAdmin) ...[
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.txtGray,
@@ -140,10 +144,30 @@ class _ViewFooterCommentContentsSectionState
                       callback: () async {
                         await widget.hideComment(commentId);
                         Navigator.pop(context);
-
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          context.go('/community/');
-                        });
+                      },
+                    ),
+                  ),
+                ],
+                if (widget.commentInfo.userId == widget.myId) ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.txtGray,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.only(top: 5),
+                    width: double.infinity,
+                    child: CustomTextButton(
+                      buttonText: Text(
+                        '삭제',
+                        style: TextStyle(
+                          color: AppColors.ivory,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                      callback: () async {
+                        await widget.deleteComment(commentId);
+                        Navigator.pop(context);
                       },
                     ),
                   ),
@@ -261,42 +285,43 @@ class _ViewFooterCommentContentsSectionState
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
                   children: [
-                    CustomTextIconButton(
-                      buttonText: Text(
-                        '${widget.commentInfo.commentLike?.length ?? 0}',
-                        style: TextStyle(
-                          color: AppColors.txtLight,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 10,
+                    // CustomTextIconButton( // TODO 여유 되면 댓글 좋아요 버튼 구현
+                    //   buttonText: Text(
+                    //     '${widget.commentInfo.commentLike?.length ?? 0}',
+                    //     style: TextStyle(
+                    //       color: AppColors.txtLight,
+                    //       fontWeight: FontWeight.w400,
+                    //       fontSize: 10,
+                    //     ),
+                    //   ),
+                    //   buttonIcon: Icon(
+                    //     Icons.thumb_up_alt_outlined,
+                    //     size: 14,
+                    //     color: AppColors.txtLight,
+                    //   ),
+                    //   callback: () {},
+                    // ),
+                    if (widget.commentInfo.parentId == null) ...[
+                      TextButton(
+                        onPressed: () {
+                          widget.onReply(commentId);
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.transparent,
+                          backgroundColor: Colors.transparent,
+                          minimumSize: Size(0, 0),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          '댓글달기',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.txtLight,
+                            fontSize: 10,
+                          ),
                         ),
                       ),
-                      buttonIcon: Icon(
-                        Icons.thumb_up_alt_outlined,
-                        size: 14,
-                        color: AppColors.txtLight,
-                      ),
-                      callback: () {},
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        widget.onReply(commentId);
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.transparent,
-                        backgroundColor: Colors.transparent,
-                        minimumSize: Size(0, 0),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        // TODO 눌렀을 때, 댓글 창 바뀌기
-                        '댓글달기',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.txtLight,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
+                    ],
                   ],
                 ),
               ),

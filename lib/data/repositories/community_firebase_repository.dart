@@ -19,10 +19,12 @@ class CommunityFirebaseRepository {
     DocumentSnapshot? startAfter,
     required int limitCount,
     required List<String> blockedUserList,
+    required PostCategory category,
   }) async {
     final (snapshot, lastDoc) = await _communityService.loadPosts(
       startAfter: startAfter,
       limitCount: limitCount,
+      category: category,
     );
 
     return (
@@ -41,7 +43,7 @@ class CommunityFirebaseRepository {
   }
 
   /// 이미지 저장
-  Future<List<String>?> saveImages(List<XFile>? images) async {
+  Future<List<String>?> saveImages(List<File>? images) async {
     if (images == null) {
       return null;
     }
@@ -49,12 +51,9 @@ class CommunityFirebaseRepository {
     // 경로 저장할 list
     final List<String> pathList = [];
 
-    // XFile -> File 변환
-    for (XFile i in images) {
-      File image = File(i.path);
-      String imageName = i.name;
-
-      String imageUrl = await _communityService.saveImage(image, imageName);
+    // list 내에서 하나씩 저장
+    for (File image in images) {
+      String imageUrl = await _communityService.saveImage(image);
 
       pathList.add(imageUrl);
     }
@@ -89,5 +88,17 @@ class CommunityFirebaseRepository {
 
   Future<void> hideComment(String postId, String commentId) {
     return _communityService.hideComment(postId, commentId);
+  }
+
+  Future<void> modifyPost(Posts copyPost, String postId) async {
+    _communityService.modifyPost(copyPost, postId);
+  }
+
+  Future<void> deleteComment(String postId, String commentId) async {
+    _communityService.deleteComment(postId, commentId);
+  }
+
+  Future<void> deletePost(String postId) async{
+    _communityService.deletePost(postId);
   }
 }

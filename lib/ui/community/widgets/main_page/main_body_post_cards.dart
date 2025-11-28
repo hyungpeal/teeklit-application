@@ -30,8 +30,8 @@ class _MainBodyPostCardsState extends State<MainBodyPostCards> {
   }
   
   // 서버에서 데이터 받아와서 초기화
-  void _getPostInfo() {
-    context.read<CommunityViewModel>().firstLoadPosts();
+  Future<void> _getPostInfo() async{
+    await context.read<CommunityViewModel>().firstLoadPosts();
   }
   
   // 스크롤 바닥에 닿는지 확인, 닿기 전 함수 실행
@@ -48,9 +48,7 @@ class _MainBodyPostCardsState extends State<MainBodyPostCards> {
 
     return RefreshIndicator(
       onRefresh: () async {
-        setState(() {
-          _getPostInfo();
-        });
+        await _getPostInfo();
       },
       child: ListView.separated(
         controller: _scrollController,

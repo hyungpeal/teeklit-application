@@ -8,11 +8,11 @@ class MainHeaderCategoriesButtonsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> categoryList = [
-      PostCategory.popular.value,
-      PostCategory.teekle.value,
-      PostCategory.free.value,
-      PostCategory.info.value,
+    final List<PostCategory> categoryList = [
+      PostCategory.popular,
+      PostCategory.teekle,
+      PostCategory.free,
+      PostCategory.info,
     ];
 
     return Align(

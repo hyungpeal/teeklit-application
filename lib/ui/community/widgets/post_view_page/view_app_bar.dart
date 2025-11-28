@@ -8,8 +8,10 @@ class ViewAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Future<void> Function() blockUser;
   final Future<bool> Function(String, String, String) reportPost;
   final Future<void> Function() hidePost;
+  final Future<void> Function() deletePost;
   final String postId;
   final String myId;
+  final String postHost;
   final bool isAdmin;
 
   const ViewAppBar({
@@ -20,6 +22,7 @@ class ViewAppBar extends StatefulWidget implements PreferredSizeWidget {
     required this.myId,
     required this.isAdmin,
     required this.hidePost,
+    required this.postHost, required this.deletePost,
   });
 
   @override
@@ -119,6 +122,57 @@ class _ViewAppBarState extends State<ViewAppBar> {
                       callback: () async {
                         await widget.hidePost();
                         Navigator.pop(context);
+
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          context.go('/community/');
+                        });
+                      },
+                    ),
+                  ),
+                ],
+                if(widget.myId == widget.postHost) ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.txtGray,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.only(top: 5),
+                    width: double.infinity,
+                    child: CustomTextButton(
+                      buttonText: Text(
+                        '수정하기',
+                        style: TextStyle(
+                          color: AppColors.ivory,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                      callback: () {
+                        Navigator.pop(context);
+                        context.push('/community/modify');
+                      },
+                    ),
+                  ),
+                ],
+                if(widget.postHost == widget.myId)...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.txtGray,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.only(top: 5),
+                    width: double.infinity,
+                    child: CustomTextButton(
+                      buttonText: Text(
+                        '삭제',
+                        style: TextStyle(
+                          color: AppColors.ivory,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                      callback: () async {
+                        await widget.deletePost();
 
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           context.go('/community/');

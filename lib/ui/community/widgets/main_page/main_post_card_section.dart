@@ -24,9 +24,9 @@ class PostCard extends StatelessWidget {
     final String? postId = postInfo.postId;
     final String postTitle = postInfo.postTitle;
     final String postContents = postInfo.postContents;
-    final List<String>? imgUrls = postInfo.imgUrls;
+    final List<String> imgUrls = postInfo.imgUrls;
     final String category = postInfo.category;
-    final bool hasImage = imgUrls!.isNotEmpty; // 이미지가 있으면 true
+    final bool hasImage = imgUrls.isNotEmpty; // 이미지가 있으면 true
 
     return GestureDetector(
       onTap: () async {

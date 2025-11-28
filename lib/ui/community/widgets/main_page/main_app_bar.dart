@@ -16,16 +16,16 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      actions: [
-        CustomIconButton(
-          buttonIcon: Icon(
-            Icons.notifications_none,
-            size: 24,
-            color: AppColors.ivory,
-          ),
-          callback: () {},
-        ),
-      ],
+      // actions: [
+      //   CustomIconButton(
+      //     buttonIcon: Icon(
+      //       Icons.notifications_none,
+      //       size: 24,
+      //       color: AppColors.ivory,
+      //     ),
+      //     callback: () {},
+      //   ),
+      // ],
     );
   }
 

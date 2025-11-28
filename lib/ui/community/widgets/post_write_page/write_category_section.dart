@@ -63,7 +63,6 @@ class _PostCategorySectionState extends State<PostCategorySection> {
                         Container(
                           margin: EdgeInsets.only(bottom: 10),
                           padding: EdgeInsets.symmetric(horizontal: 5),
-                          // TODO 바텀시트바 상단 침범하는거 해결하기
                           child: ListTile(
                             enableFeedback: false,
                             shape: RoundedRectangleBorder(

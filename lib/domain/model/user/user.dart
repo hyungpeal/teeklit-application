@@ -50,6 +50,7 @@ class User {
       password: password ?? this.password,
       nickname: nickname ?? this.nickname,
       profileImagePath: profileImagePath ?? this.profileImagePath,
+      blockUser: blockUser ?? this.blockUser,
     );
   }
 }

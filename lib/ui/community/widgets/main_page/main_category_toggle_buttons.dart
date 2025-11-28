@@ -6,7 +6,7 @@ import 'package:teeklit/ui/core/themes/colors.dart';
 
 /// 커뮤니티 게시판의 카테고리 토글 버튼
 class MainCategoryToggleButtons extends StatefulWidget {
-  final List<String> categories;
+  final List<PostCategory> categories;
 
   /// 카테고리 토글 버튼을 만드는 widget
   const MainCategoryToggleButtons({super.key, required this.categories});
@@ -18,7 +18,7 @@ class MainCategoryToggleButtons extends StatefulWidget {
 class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
   late List<bool> _selected;
 
-  void updateButtonSeleccted(int i) {
+  void updateButtonSelected(int i) {
     for (int j = 0; j < _selected.length; j++) {
       _selected[j] = j == i;
     }
@@ -41,7 +41,7 @@ class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
         final List<Widget> buttonList = [];
 
         for (int i = 0; i < widget.categories.length; i++) {
-          final String category = widget.categories[i];
+          final String category = widget.categories[i].value;
           final bool isSelected = _selected[i];
 
           buttonList.add(
@@ -55,9 +55,10 @@ class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
 
               child: ToggleButtons(
                 isSelected: [isSelected],
-                onPressed: (index) {
+                onPressed: (index) async{
+                  await context.read<CommunityViewModel>().changeCategory(widget.categories[i]);
                   setState(() {
-                    updateButtonSeleccted(i);
+                    updateButtonSelected(i);
                   });
                 },
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,

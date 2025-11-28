@@ -61,8 +61,10 @@ class _CommunityPostViewPageState extends State<CommunityPostViewPage> {
           hidePost: vm.hidePost,
           postId: vm.postId,
           myId: vm.myId,
+          postHost: vm.post.userId,
           isAdmin: vm.isAdmin,
-        ), // TODO user view model과 연결해서 자신 게시물이면 삭제
+          deletePost: vm.deletePost,
+        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -145,6 +147,8 @@ class _CommunityPostViewPageState extends State<CommunityPostViewPage> {
                               userId: vm.myId,
                               isAdmin: vm.isAdmin,
                               commentLength: vm.commentList.length,
+                              myId: vm.myId,
+                              deleteComment: vm.deleteComment,
                             ),
                           ],
                         );

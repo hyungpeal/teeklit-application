@@ -12,9 +12,11 @@ class ViewFooterCommentSection extends StatelessWidget {
   final Future<void> Function() blockUser;
   final Future<bool> Function(String, String, String) reportPost;
   final Future<void> Function(String) hideComment;
+  final Future<void> Function(String) deleteComment;
   final String userId;
   final bool isAdmin;
   final int commentLength;
+  final String myId;
 
   /// 게시글 상세보기 페이지의 하단 댓글 section
   const ViewFooterCommentSection({
@@ -29,6 +31,7 @@ class ViewFooterCommentSection extends StatelessWidget {
     required this.userId,
     required this.isAdmin,
     required this.commentLength,
+    required this.myId, required this.deleteComment,
   });
 
   @override
@@ -68,6 +71,8 @@ class ViewFooterCommentSection extends StatelessWidget {
                     hideComment: hideComment,
                     userId: userId,
                     isAdmin: isAdmin,
+                    myId: myId,
+                    deleteComment: deleteComment,
                   ),
                   ...myChildren.map((comment) {
                     return ViewFooterCommentContentsSection(
@@ -79,6 +84,8 @@ class ViewFooterCommentSection extends StatelessWidget {
                       hideComment: hideComment,
                       userId: userId,
                       isAdmin: isAdmin,
+                      myId: myId,
+                      deleteComment: deleteComment,
                     );
                   }),
                 ],
