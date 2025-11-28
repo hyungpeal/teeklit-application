@@ -103,7 +103,7 @@ class _CommunityPostViewPageState extends State<CommunityPostViewPage> {
                               child: ViewHeaderPostInfoSection(
                                 title: vm.post.postTitle,
                                 time: vm.post.createAt,
-                                imgUrl: vm.postUserInfo.profileImagePath,
+                                imgUrl: vm.postUserInfo.profileImage,
                                 nickName: vm.postUserInfo.nickname!,
                               ),
                             ),

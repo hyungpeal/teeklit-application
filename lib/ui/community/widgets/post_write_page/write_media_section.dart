@@ -91,20 +91,20 @@ class WriteMediaSection extends StatelessWidget {
                     ),
                     callback: onPickImages,
                   ),
-                  CustomTextIconButton(
-                    buttonText: Text(
-                      '장소',
-                      style: TextStyle(
-                        color: AppColors.txtLight,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    buttonIcon: Icon(
-                      Icons.place,
-                      color: AppColors.txtLight,
-                    ),
-                  ),
+                  // CustomTextIconButton(
+                  //   buttonText: Text(
+                  //     '장소',
+                  //     style: TextStyle(
+                  //       color: AppColors.txtLight,
+                  //       fontSize: 12,
+                  //       fontWeight: FontWeight.w400,
+                  //     ),
+                  //   ),
+                  //   buttonIcon: Icon(
+                  //     Icons.place,
+                  //     color: AppColors.txtLight,
+                  //   ),
+                  // ),
                 ],
               ),
             ],

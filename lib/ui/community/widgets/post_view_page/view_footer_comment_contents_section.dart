@@ -219,7 +219,7 @@ class _ViewFooterCommentContentsSectionState
               aspectRatio: 1,
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                  widget.userInfo.profileImagePath ??
+                  widget.userInfo.profileImage ??
                       'https://cdn.epnnews.com/news/photo/202008/5216_6301_1640.jpg',
                 ),
               ),
