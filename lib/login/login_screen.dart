@@ -30,73 +30,76 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 132),
-
-              Image.asset(
-                "assets/images/teeklit_logo.png",
-                width: 112,
-                height: 150.5,
-              ),
-
-              const SizedBox(height: 80),
-
-              _inputField(
-                hint: "이메일 주소",
-                isPassword: false,
-                controller: _emailController,
-              ),
-
-              const SizedBox(height: 12),
-
-              _inputField(
-                hint: "비밀번호",
-                isPassword: true,
-                controller: _pwController,
-              ),
-
-              const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      context.push('/find-account');  // 비밀번호 찾기
-                    },
-                    child: Text(
-                      "아이디 / 비밀번호 찾기",
-                      style: LoginStyle.captionStyle,
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-                  Text("|", style: LoginStyle.captionStyle),
-                  const SizedBox(width: 12),
-
-                  GestureDetector(
-                    onTap: () {
-                      context.push('/signup-terms');   // ⬅ 이메일 가입하기 (회원가입 시작)
-                    },
-                    child: Text(
-                      "이메일 가입하기",
-                      style: LoginStyle.captionStyle.copyWith(
-                        decoration: TextDecoration.underline,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 132),
+          
+                Image.asset(
+                  "assets/images/teeklit_logo.png",
+                  width: 112,
+                  height: 150.5,
+                ),
+          
+                const SizedBox(height: 80),
+          
+                _inputField(
+                  hint: "이메일 주소",
+                  isPassword: false,
+                  controller: _emailController,
+                ),
+          
+                const SizedBox(height: 12),
+          
+                _inputField(
+                  hint: "비밀번호",
+                  isPassword: true,
+                  controller: _pwController,
+                ),
+          
+                const SizedBox(height: 20),
+          
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context.push('/find-account');  // 비밀번호 찾기
+                      },
+                      child: Text(
+                        "아이디 / 비밀번호 찾기",
+                        style: LoginStyle.captionStyle,
                       ),
                     ),
-                  ),
-                ],
-              ),
-
-
-              const SizedBox(height: 32),
-
-              _loginButton(),
-            ],
+          
+                    const SizedBox(width: 12),
+                    Text("|", style: LoginStyle.captionStyle),
+                    const SizedBox(width: 12),
+          
+                    GestureDetector(
+                      onTap: () {
+                        context.push('/signup-terms');   // ⬅ 이메일 가입하기 (회원가입 시작)
+                      },
+                      child: Text(
+                        "이메일 가입하기",
+                        style: LoginStyle.captionStyle.copyWith(
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+          
+          
+                const SizedBox(height: 32),
+          
+                _loginButton(),
+              ],
+            ),
           ),
         ),
       ),
