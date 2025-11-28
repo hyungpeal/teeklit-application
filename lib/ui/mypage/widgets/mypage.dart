@@ -83,12 +83,12 @@ class MyPageScreen extends StatelessWidget {
               /// 설정 섹션
               const _SectionTitle('설정'),
               const SizedBox(height: 8),
-              _MenuItem(
-                title: '알림 설정',
-                onTap: () {
-                  context.push('/alert-setting');
-                },
-              ),
+              // _MenuItem(
+              //   title: '알림 설정',
+              //   onTap: () {
+              //     context.push('/alert-setting');
+              //   },
+              // ),
               _MenuItem(
                 title: '계정 설정',
                 onTap: () {

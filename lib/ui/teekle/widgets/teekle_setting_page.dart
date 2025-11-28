@@ -502,7 +502,7 @@ class _TeekleSettingPage extends State<TeekleSettingPage> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('삭제되었습니다')),
                                 );
-                                Navigator.pop(context);
+                                Navigator.pop(context, true);
                               }
                             },
                             style: ElevatedButton.styleFrom(
