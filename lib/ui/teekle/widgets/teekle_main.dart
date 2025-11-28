@@ -39,7 +39,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
 
   List<Teekle> _teeklesForDay = []; //선택된 날의 티클
 
-  // 랜덤 무브 후보들
+  // 랜덤 티클 후보들
   List<Task> _randomCandidates = [];
   bool _isRandomLoading = false;
   String? _randomErrorMessage;
@@ -297,7 +297,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
         builder: (_) => AlertDialog(
           backgroundColor: const Color(0xFF252525),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('오늘의 랜덤 무브', style: TextStyle(color: Colors.white)),
+          title: const Text('오늘의 랜덤 티클', style: TextStyle(color: Colors.white)),
           content: Text(
             '${template.title}\n\n내 티클에 추가할까요?',
             style: const TextStyle(color: Colors.white70),
@@ -700,7 +700,7 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
                                 borderRadius: BorderRadius.circular(20),
                                 child: Dismissible(
                                   key: ValueKey(teekle.title),
-                                  direction: DismissDirection.horizontal,
+                                  direction: DismissDirection.endToStart,
 
                                   background: Container(
                                     //좌 -> 우
@@ -735,7 +735,8 @@ class _TeekleMainScreenState extends State<TeekleMainScreen> {
                                   confirmDismiss: (direction) async {
                                     if (direction ==
                                         DismissDirection.startToEnd) {
-                                      _shareTeekle(teekle);
+                                      // _shareTeekle(teekle);
+                                      return false;
                                     } else if (direction ==
                                         DismissDirection.endToStart) {
                                       setState(() {

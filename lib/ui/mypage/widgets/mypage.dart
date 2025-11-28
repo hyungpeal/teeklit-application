@@ -44,13 +44,13 @@ class MyPageScreen extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.notifications_none_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
+                  // IconButton(
+                  //   onPressed: () {},
+                  //   icon: const Icon(
+                  //     Icons.notifications_none_rounded,
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 28),

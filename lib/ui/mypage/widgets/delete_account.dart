@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
@@ -74,7 +75,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () => Navigator.of(context).pop(true),
+                        onPressed: () => context.pop(true),
                         child: const Text(
                           '탈퇴',
                           style: TextStyle(
@@ -98,7 +99,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () => Navigator.of(context).pop(false),
+                        onPressed: () => context.pop(false),
                         child: const Text(
                           '계속 함께하기💪🏻',
                           style: TextStyle(
@@ -169,15 +170,14 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       if (!mounted) return;
 
       // 5) 탈퇴 완료 화면으로 이동
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const DeleteDoneScreen()),
-            (route) => false,
-      );
+      context.go('/delete-done');
+
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('탈퇴 실패: ${e.code}')),
       );
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('알 수 없는 오류가 발생했습니다.')),
       );
@@ -195,7 +195,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(true),
         ),
         title: const Text(
           '탈퇴하기',
@@ -310,10 +310,7 @@ class DeleteDoneScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             // 온보딩/첫 화면으로 이동
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              '/welcome',
-                  (route) => false,
-            );
+            context.go('/login');
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.green,

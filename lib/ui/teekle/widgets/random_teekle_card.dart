@@ -18,7 +18,7 @@ class RandomMoveCard extends StatelessWidget {
         children: [
           const Expanded(
             child: Text(
-              '랜덤 무브로 상쾌한 아침 어때요?',
+              '랜덤 티클로 상쾌한 아침 어때요?',
               style: TextStyle(color: Colors.white70, fontSize: 15),
             ),
           ),

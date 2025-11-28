@@ -59,7 +59,9 @@ class _TeekleSelectWorkoutScreenState extends State<TeekleSelectWorkoutScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.bg,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           icon: Icon(Icons.arrow_back_ios),
           color: AppColors.txtGray,
         ),

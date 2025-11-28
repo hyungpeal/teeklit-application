@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 import '../../../login/auth_service.dart';
 import 'change_password.dart';
@@ -29,7 +30,7 @@ class AccountSettingsScreen extends StatelessWidget {
             child: const Text('닫기', style: TextStyle(color: Colors.white70)),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => context.go('/login'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.green,
               foregroundColor: Colors.black,
@@ -89,12 +90,7 @@ class AccountSettingsScreen extends StatelessWidget {
           _AccountItem(
             title: '탈퇴하기',
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const DeleteAccountScreen(),
-                ),
-              );
+              context.go('/delete-account');
             },
           ),
         ],

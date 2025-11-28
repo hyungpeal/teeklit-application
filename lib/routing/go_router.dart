@@ -18,7 +18,6 @@ import 'package:teeklit/ui/community/community_post_write_page.dart';
 import 'package:teeklit/ui/home/home_page.dart';
 import 'package:teeklit/ui/home/navigation_view.dart';
 import 'package:teeklit/domain/model/enums.dart';
-import 'package:teeklit/ui/mypage/delete_account_screen.dart';
 import 'package:teeklit/ui/mypage/widgets/account_setting.dart';
 import 'package:teeklit/ui/mypage/widgets/alert_setting.dart';
 import 'package:teeklit/ui/mypage/widgets/mypage.dart';
@@ -31,6 +30,7 @@ import 'package:teeklit/ui/teekle/widgets/teekle_select_workout.dart';
 
 import '../domain/model/task.dart';
 import '../domain/model/teekle.dart';
+import '../ui/mypage/widgets/delete_account.dart';
 import '../ui/mypage/widgets/profile_edit.dart';
 
 final GoRouter router = GoRouter(
@@ -118,6 +118,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/delete-account',
       builder: (context, state) => const DeleteAccountScreen(),
+    ),
+
+    GoRoute(
+      path: '/delete-done',
+      builder: (context, state) => const DeleteDoneScreen(),
     ),
 
     GoRoute(
