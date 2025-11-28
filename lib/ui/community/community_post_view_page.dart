@@ -104,7 +104,7 @@ class _CommunityPostViewPageState extends State<CommunityPostViewPage> {
                                 title: vm.post.postTitle,
                                 time: vm.post.createAt,
                                 imgUrl: vm.postUserInfo.profileImagePath,
-                                nickName: vm.postUserInfo.nickname,
+                                nickName: vm.postUserInfo.nickname!,
                               ),
                             ),
 
@@ -144,7 +144,6 @@ class _CommunityPostViewPageState extends State<CommunityPostViewPage> {
                               blockUser: vm.blockUser,
                               reportPost: context.read<ReportViewModel>().submitReport,
                               hideComment: vm.hideComment,
-                              userId: vm.myId,
                               isAdmin: vm.isAdmin,
                               commentLength: vm.commentList.length,
                               myId: vm.myId,

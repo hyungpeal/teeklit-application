@@ -31,6 +31,7 @@ class _MainBodyPostCardsState extends State<MainBodyPostCards> {
   
   // 서버에서 데이터 받아와서 초기화
   Future<void> _getPostInfo() async{
+    // context.read<CommunityViewModel>().mainCategory = PostCategory.popular;
     await context.read<CommunityViewModel>().firstLoadPosts();
   }
   

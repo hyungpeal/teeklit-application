@@ -10,7 +10,6 @@ import 'package:teeklit/ui/community/widgets/community_custom_buttons.dart';
 class ViewFooterCommentContentsSection extends StatefulWidget {
   final Comments commentInfo;
   final User userInfo;
-  final String userId;
   final bool isAdmin;
   final String myId;
   final Function(String?) onReply;
@@ -28,7 +27,6 @@ class ViewFooterCommentContentsSection extends StatefulWidget {
     required this.blockUser,
     required this.reportPost,
     required this.hideComment,
-    required this.userId,
     required this.isAdmin,
     required this.myId,
     required this.deleteComment,
@@ -92,7 +90,7 @@ class _ViewFooterCommentContentsSectionState
                       await widget.reportPost(
                         commentId,
                         TargetType.comment.value.toString(),
-                        widget.userId,
+                        widget.myId,
                       );
                       Navigator.pop(context);
                     },
@@ -225,7 +223,7 @@ class _ViewFooterCommentContentsSectionState
           ),
           Expanded(
             child: Text(
-              widget.userInfo.nickname,
+              widget.userInfo.nickname!,
               style: TextStyle(
                 color: AppColors.txtLight,
                 fontSize: 12,

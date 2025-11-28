@@ -50,15 +50,64 @@ class _CommunityPostWritePageState extends State<CommunityPostWritePage> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating, // 떠있는 스타일
+      ),
+    );
+  }
+
+  Future<void> _submitForm() async {
     if (_formkey.currentState!.validate()) {
       final postTitle = _titleController.text;
       final category = _categoryController.text;
       final postContents = _contentsController.text;
 
-      context.read<CommunityViewModel>().addPost(postTitle, postContents, category, _images);
-      
-      context.go('/community');
+      final vm = context.read<CommunityViewModel>();
+
+      if (vm.myId.isEmpty) {
+        _showSnackBar(context, '로그인 정보가 유효하지 않습니다.');
+        return;
+      }
+
+      if(postTitle.isEmpty) {
+        _showSnackBar(context, '제목을 입력해주세요.');
+        return;
+      }
+
+      if (category.isEmpty) {
+        _showSnackBar(context, '카테고리를 선택해주세요.');
+        return;
+      }
+
+      if (postContents.isEmpty) {
+        _showSnackBar(context, '내용을 입력해주세요.');
+        return;
+      }
+
+      try {
+        await vm.addPost(
+            postTitle,
+            postContents,
+            category,
+            _images
+        );
+
+        if (context.mounted) { // 비동기 후 context 살아있는지 확인
+          context.goNamed('communityMain');
+          _showSnackBar(context, '게시글이 등록되었습니다.');
+        }
+      } catch (e) {
+        if (context.mounted) {
+          _showSnackBar(context, '게시글 등록에 실패했습니다: $e');
+        }
+      }
+
+      // context.read<CommunityViewModel>().addPost(postTitle, postContents, category, _images);
+      // context.goNamed('communityMain');
     }
   }
 

@@ -13,19 +13,19 @@ class User {
   final String? userId;
   final String email;
   final String? password;
-  final String nickname;
+  final String? nickname;
   final String? profileImagePath; // 로컬 파일 경로 (선택)
-  final isAdmin = false;
+  final bool? isAdmin;
   final List<String>? blockUser;
-
 
   const User({
     required this.email,
     this.password,
-    required this.nickname,
+    this.nickname,
     this.profileImagePath,
     this.userId,
     this.blockUser,
+    this.isAdmin,
   });
 
   factory User.fromJson(DocumentSnapshot doc) {
@@ -35,6 +35,7 @@ class User {
       email: data['email'],
       nickname: data['nickname'],
       profileImagePath: data['profileImagePath'],
+      isAdmin: data['isAdmin'],
     );
   }
 
@@ -44,6 +45,7 @@ class User {
     String? nickname,
     String? profileImagePath,
     List<String>? blockUser,
+    bool? isAdmin,
   }) {
     return User(
       email: email ?? this.email,
@@ -51,6 +53,7 @@ class User {
       nickname: nickname ?? this.nickname,
       profileImagePath: profileImagePath ?? this.profileImagePath,
       blockUser: blockUser ?? this.blockUser,
+      isAdmin: isAdmin ?? this.isAdmin,
     );
   }
 }

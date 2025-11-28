@@ -8,16 +8,15 @@ import 'package:teeklit/domain/model/community/comments.dart';
 import 'package:teeklit/domain/model/community/modify_image.dart';
 import 'package:teeklit/domain/model/community/posts.dart';
 import 'package:teeklit/domain/model/user/user.dart';
-import 'package:teeklit/main.dart';
+import 'package:teeklit/login/signup_info.dart';
+import 'package:teeklit/ui/community/imsi/fire_base_user.dart';
 
 class CommunityViewModel extends ChangeNotifier {
   final CommunityFirebaseRepository _repo = CommunityFirebaseRepository();
   final UserFirebaseRepository _userRepo = UserFirebaseRepository();
 
-  // TODO 임시 admin
-  bool isAdmin = true;
-  String myId = 'testUser2';
-  // TODO 임시 id
+  late String myId;
+  bool isAdmin = false;
 
   PostCategory mainCategory = PostCategory.popular;
   List<Posts> postList = [];
@@ -40,6 +39,15 @@ class CommunityViewModel extends ChangeNotifier {
 
   bool isLoading = false;
 
+
+  /// user 받아오기
+  Future<void> getCurrentUser() async{
+    SignupInfo currentUser = await getUser();
+
+    myId = currentUser.userId!;
+    isAdmin = currentUser.isAdmin!;
+  }
+
   /// main에서 게시글 선택 시, 게시글 id 저장
   Future<void> selectedPost(String selectedPostId) async {
     if (isLoading) return;
@@ -57,6 +65,8 @@ class CommunityViewModel extends ChangeNotifier {
   Future<void> firstLoadPosts() async {
     if (isLoading) return;
     isLoading = true;
+
+    await getCurrentUser();
 
     postList.clear();
 
@@ -120,7 +130,7 @@ class CommunityViewModel extends ChangeNotifier {
       postContents: postContents,
       category: category,
       createAt: DateTime.now(),
-      userId: 'testUser2', // TODO UserId 넘겨줘야 함
+      userId: myId, // TODO UserId 넘겨줘야 함
       imgUrls: await _repo.saveImages(images) ?? [],
       postView: 0,
       postLike: [],
@@ -128,8 +138,8 @@ class CommunityViewModel extends ChangeNotifier {
     );
 
     await _repo.addPost(newPost);
-    isLoading = false;
 
+    isLoading = false;
     await firstLoadPosts();
   }
 
@@ -166,11 +176,13 @@ class CommunityViewModel extends ChangeNotifier {
     );
 
     isLoading = false;
+    mainCategory = PostCategory.popular;
   }
 
   /// 게시글 삭제
   Future<void> deletePost() async {
     await _repo.deletePost(postId);
+    mainCategory = PostCategory.popular;
   }
 
   /// 게시글 좋아요 버튼 기능
@@ -206,7 +218,7 @@ class CommunityViewModel extends ChangeNotifier {
     isLoading = true;
 
     final Comments newComment = Comments(
-      userId: 'testUser2', // TODO UserId 넘겨줘야 함
+      userId: myId,
       commentContents: comment,
       createAt: DateTime.now(),
       parentId: parentId,

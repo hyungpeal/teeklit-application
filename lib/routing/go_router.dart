@@ -34,7 +34,7 @@ import '../domain/model/teekle.dart';
 import '../ui/mypage/widgets/profile_edit.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/onboarding',
   routes: [
     // 온보딩 첫 화면
     GoRoute(

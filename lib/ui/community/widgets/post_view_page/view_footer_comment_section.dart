@@ -13,7 +13,6 @@ class ViewFooterCommentSection extends StatelessWidget {
   final Future<bool> Function(String, String, String) reportPost;
   final Future<void> Function(String) hideComment;
   final Future<void> Function(String) deleteComment;
-  final String userId;
   final bool isAdmin;
   final int commentLength;
   final String myId;
@@ -28,7 +27,6 @@ class ViewFooterCommentSection extends StatelessWidget {
     required this.blockUser,
     required this.reportPost,
     required this.hideComment,
-    required this.userId,
     required this.isAdmin,
     required this.commentLength,
     required this.myId, required this.deleteComment,
@@ -69,7 +67,6 @@ class ViewFooterCommentSection extends StatelessWidget {
                     blockUser: blockUser,
                     reportPost: reportPost,
                     hideComment: hideComment,
-                    userId: userId,
                     isAdmin: isAdmin,
                     myId: myId,
                     deleteComment: deleteComment,
@@ -82,7 +79,6 @@ class ViewFooterCommentSection extends StatelessWidget {
                       blockUser: blockUser,
                       reportPost: reportPost,
                       hideComment: hideComment,
-                      userId: userId,
                       isAdmin: isAdmin,
                       myId: myId,
                       deleteComment: deleteComment,

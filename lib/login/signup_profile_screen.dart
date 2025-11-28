@@ -234,6 +234,8 @@ class _SignupProfileScreenState extends State<SignupProfileScreen> {
                   'nickname': info.nickname,
                   'profileImage': photoUrl,
                   'createdAt': FieldValue.serverTimestamp(),
+                  'isAdmin': false,
+                  'blockUser': null,
                 });
 
                 // 4) 이메일 인증 메일 보내기

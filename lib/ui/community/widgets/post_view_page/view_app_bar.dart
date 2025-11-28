@@ -22,7 +22,8 @@ class ViewAppBar extends StatefulWidget implements PreferredSizeWidget {
     required this.myId,
     required this.isAdmin,
     required this.hidePost,
-    required this.postHost, required this.deletePost,
+    required this.postHost,
+    required this.deletePost,
   });
 
   @override
@@ -50,59 +51,63 @@ class _ViewAppBarState extends State<ViewAppBar> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.txtGray,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  margin: EdgeInsets.only(top: 5),
-                  width: double.infinity,
-                  child: CustomTextButton(
-                    buttonText: Text(
-                      '신고',
-                      style: TextStyle(
-                        color: AppColors.ivory,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
+                if (widget.myId != widget.postHost) ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.txtGray,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    callback: () async{
-                      await widget.reportPost(
-                        widget.postId,
-                        TargetType.post.value, // TODO id 변경
-                        widget.myId,
-                      );
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.txtGray,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  margin: EdgeInsets.only(top: 5),
-                  width: double.infinity,
-                  child: CustomTextButton(
-                    buttonText: Text(
-                      '차단',
-                      style: TextStyle(
-                        color: AppColors.ivory,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
+                    margin: EdgeInsets.only(top: 5),
+                    width: double.infinity,
+                    child: CustomTextButton(
+                      buttonText: Text(
+                        '신고',
+                        style: TextStyle(
+                          color: AppColors.ivory,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
                       ),
+                      callback: () async {
+                        await widget.reportPost(
+                          widget.postId,
+                          TargetType.post.value, // TODO id 변경
+                          widget.myId,
+                        );
+                        Navigator.pop(context);
+                      },
                     ),
-                    callback: () async {
-                      await widget.blockUser();
-                      Navigator.pop(context);
+                  ),
+                ],
+                if (widget.myId != widget.postHost) ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.txtGray,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: EdgeInsets.only(top: 5),
+                    width: double.infinity,
+                    child: CustomTextButton(
+                      buttonText: Text(
+                        '차단',
+                        style: TextStyle(
+                          color: AppColors.ivory,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                      callback: () async {
+                        await widget.blockUser();
+                        Navigator.pop(context);
 
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        context.go('/community/');
-                      });
-                    },
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          context.go('/community/');
+                        });
+                      },
+                    ),
                   ),
-                ),
-                if(widget.isAdmin)...[
+                ],
+                if (widget.isAdmin) ...[
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.txtGray,
@@ -130,7 +135,7 @@ class _ViewAppBarState extends State<ViewAppBar> {
                     ),
                   ),
                 ],
-                if(widget.myId == widget.postHost) ...[
+                if (widget.myId == widget.postHost) ...[
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.txtGray,
@@ -154,7 +159,7 @@ class _ViewAppBarState extends State<ViewAppBar> {
                     ),
                   ),
                 ],
-                if(widget.postHost == widget.myId)...[
+                if (widget.postHost == widget.myId) ...[
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.txtGray,

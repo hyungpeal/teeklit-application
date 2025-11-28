@@ -62,12 +62,12 @@ class CommunityFirebaseRepository {
   }
 
   Future<void> commentWrite(Comments newComment, String postId) async {
-    _communityService.commentWrite(newComment, postId);
+    await _communityService.commentWrite(newComment, postId);
   }
 
   /// 댓글 필터링 하기
   Future<List<Comments>> readComment(String postId) async {
-    return _communityService.readComment(postId);
+    return await _communityService.readComment(postId);
   }
 
   Future<void> addLike(String postId, String userId) async {

@@ -28,12 +28,11 @@ class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
   void initState() {
     super.initState();
     _selected = List.generate(widget.categories.length, (_) => false);
-    _selected[0] = true;
   }
 
   @override
   Widget build(BuildContext context) {
-
+    PostCategory mainCategory = context.read<CommunityViewModel>().mainCategory;
     return LayoutBuilder(
       builder: (context, constraints) {
         final double height = constraints.maxHeight;
@@ -42,7 +41,11 @@ class _MainCategoryToggleButtonsState extends State<MainCategoryToggleButtons> {
 
         for (int i = 0; i < widget.categories.length; i++) {
           final String category = widget.categories[i].value;
-          final bool isSelected = _selected[i];
+          bool isSelected = _selected[i];
+
+          if(category == mainCategory.value) {
+            isSelected = true;
+          }
 
           buttonList.add(
             Container(
