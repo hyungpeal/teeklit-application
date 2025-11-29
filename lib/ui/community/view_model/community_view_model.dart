@@ -15,6 +15,10 @@ class CommunityViewModel extends ChangeNotifier {
   final CommunityFirebaseRepository _repo = CommunityFirebaseRepository();
   final UserFirebaseRepository _userRepo = UserFirebaseRepository();
 
+  CommunityViewModel(){
+    getCurrentUser();
+  }
+
   late String myId;
   bool isAdmin = false;
 
@@ -131,7 +135,7 @@ class CommunityViewModel extends ChangeNotifier {
       postContents: postContents,
       category: category,
       createAt: DateTime.now(),
-      userId: myId, // TODO UserId 넘겨줘야 함
+      userId: myId,
       imgUrls: await _repo.saveImages(images) ?? [],
       postView: 0,
       postLike: [],
