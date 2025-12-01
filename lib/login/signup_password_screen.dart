@@ -133,7 +133,7 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
             const SizedBox(height: 20),
 
             const Text(
-              "이메일 인증을 완료했어요.\n사용하실 비밀번호를 입력해주세요.",
+              "사용하실 비밀번호를 입력해주세요.",
               style: TextStyle(
                 fontFamily: 'Paperlogy',
                 fontSize: 20,

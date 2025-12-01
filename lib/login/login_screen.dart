@@ -195,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // 3) 이메일 인증 여부 확인
       if (user != null && !user.emailVerified) {
+        print('${user.email}-check verify: ${user.emailVerified}');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("이메일 인증이 완료되지 않았습니다.")),
         );
