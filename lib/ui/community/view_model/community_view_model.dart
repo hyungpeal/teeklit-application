@@ -143,6 +143,7 @@ class CommunityViewModel extends ChangeNotifier {
     );
 
     await _repo.addPost(newPost);
+    mainCategory = PostCategory.parse(category);
 
     isLoading = false;
     await firstLoadPosts();
