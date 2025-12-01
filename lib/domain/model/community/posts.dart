@@ -10,6 +10,15 @@ enum PostCategory {
   final String value;
 
   const PostCategory({required this.value});
+
+  static PostCategory parse(String categoryString) {
+    for(var i in PostCategory.values){
+      if(categoryString == i.value){
+        return i;
+      }
+    }
+    return popular;
+  }
 }
 
 // 게시글 식별값은 doc id를 사용.
