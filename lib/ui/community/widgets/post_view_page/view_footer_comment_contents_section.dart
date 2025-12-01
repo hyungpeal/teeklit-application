@@ -64,7 +64,12 @@ class _ViewFooterCommentContentsSectionState
       backgroundColor: AppColors.bg,
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.only(
+            top: 20,
+            left: 20,
+            right: 20,
+            bottom: MediaQuery.paddingOf(context).bottom + 20,
+          ),
           child: SizedBox(
             // height: MediaQuery.of(context).size.height * 0.3,
             child: Column(

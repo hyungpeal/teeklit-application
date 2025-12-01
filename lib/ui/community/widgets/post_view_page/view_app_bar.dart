@@ -36,6 +36,7 @@ class ViewAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _ViewAppBarState extends State<ViewAppBar> {
   Future<void> _openModal() async {
     await showModalBottomSheet<String>(
+      useSafeArea: true,
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -45,7 +46,7 @@ class _ViewAppBarState extends State<ViewAppBar> {
       backgroundColor: AppColors.bg,
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom + 20, left: 20, top: 20, right: 20),
           child: SizedBox(
             // height: MediaQuery.of(context).size.height * 0.3,
             child: Column(

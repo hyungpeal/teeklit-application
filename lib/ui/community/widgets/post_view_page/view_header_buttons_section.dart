@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:teeklit/domain/model/community/posts.dart';
 import 'package:teeklit/ui/community/view_model/community_view_model.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
 import 'package:teeklit/ui/community/widgets/post_view_page/view_bookmark_toggle_button.dart';
@@ -17,7 +18,10 @@ class ViewHeaderButtonsSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         TextButton(
-          onPressed: () {context.goNamed('communityMain');},
+          onPressed: () {
+            // context.read<CommunityViewModel>().mainCategory = PostCategory.parse(category);
+            context.go('/community/');
+          },
           style: TextButton.styleFrom(
             backgroundColor: AppColors.darkGreen,
             minimumSize: Size(0, 0),
