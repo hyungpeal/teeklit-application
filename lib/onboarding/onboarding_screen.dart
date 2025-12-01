@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 
 import '../ui/core/themes/colors.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class OnboardingScreen extends StatefulWidget {
@@ -14,6 +16,19 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _index = 0;
+
+  //풀스크린
+  @override
+  void initState() {
+    super.initState();
+    Fullscreen.enable();
+  }
+
+  @override
+  void dispose() {
+    Fullscreen.disable();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +90,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     vertical: 14,
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('hasSeenOnboarding', true);
+
                   context.go('/login');
                 },
+
                 child: const Text(
                   "지금 함께해요!",
                   style: TextStyle(

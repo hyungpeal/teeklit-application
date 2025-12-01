@@ -1,12 +1,12 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:teeklit/login/signup_info.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teeklit/login/signup_info.dart';
+import 'package:teeklit/utils/fullscreen.dart';
+import 'app_router.dart';
+import 'signup_info.dart';
 
 import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
-import 'app_router.dart';
 
 class SignupEmailVerifyScreen extends StatefulWidget {
   final SignupInfo info;
@@ -22,87 +22,19 @@ class SignupEmailVerifyScreen extends StatefulWidget {
 }
 
 class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
-  Timer? _timer;
-
-  /// 🔥 5초마다 인증 상태 자동 체크
-  void _startAutoCheck() {
-    _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
-      try {
-        final user = FirebaseAuth.instance.currentUser;
-
-        if (user == null) {
-          print("❌ AutoCheck Error: user == null");
-          return;
-        }
-
-        await user.reload();
-
-        final refreshedUser = FirebaseAuth.instance.currentUser;
-
-        if (refreshedUser != null && refreshedUser.emailVerified) {
-          if (!mounted) return;
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("이메일 인증이 완료되었습니다.")),
-          );
-
-          _timer?.cancel();
-          context.go('/', extra: widget.info);
-        }
-      } on FirebaseAuthException catch (e) {
-        print("❌ AutoCheck FirebaseAuthException: ${e.code} / ${e.message}");
-      } catch (e) {
-        print("❌ AutoCheck Unknown Error: $e");
-      }
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _startAutoCheck();
+    Fullscreen.enable();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    Fullscreen.disable();
     super.dispose();
   }
 
-  /// 🔍 수동 인증 체크
-  Future<void> _checkEmailVerified() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-
-      if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("로그인 정보가 올바르지 않습니다.")),
-        );
-        print("❌ CheckEmailVerified Error: user == null");
-        return;
-      }
-
-      await user.reload();
-      final refreshedUser = FirebaseAuth.instance.currentUser;
-
-      if (refreshedUser != null && refreshedUser.emailVerified) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("이메일 인증이 완료되었습니다.")),
-        );
-
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("아직 인증이 완료되지 않았습니다.")),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      // 🔥 Firebase 오류 상세 출력
-      print("❌ CheckEmailVerified FirebaseAuthException: ${e.code} / ${e.message}");
-    } catch (e) {
-      print("❌ CheckEmailVerified Unknown Error: $e");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,16 +47,21 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.chevron_left,
-              color: AppColors.strokeGray, size: 28),
+          onPressed: () => context.go('/login'),
+          icon: Icon(
+            Icons.chevron_left,
+            color: AppColors.strokeGray,
+            size: 28,
+          ),
         ),
       ),
 
       bottomNavigationBar: SizedBox(
         height: 80,
         child: ElevatedButton(
-          onPressed: _checkEmailVerified,
+          onPressed: () {
+            context.go('/login');   // 🔥 로그인 화면으로 이동
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.darkGreen,
             elevation: 0,
@@ -163,7 +100,7 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(
+                  TextSpan(
                     text: "전송된 링크로 ",
                     style: TextStyle(
                       fontFamily: 'Paperlogy',
@@ -173,7 +110,7 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  const TextSpan(
+                  TextSpan(
                     text: "인증",
                     style: TextStyle(
                       fontFamily: 'Paperlogy',
@@ -183,7 +120,7 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  const TextSpan(
+                  TextSpan(
                     text: "을 진행해주세요.",
                     style: TextStyle(
                       fontFamily: 'Paperlogy',
@@ -212,8 +149,6 @@ class _SignupEmailVerifyScreenState extends State<SignupEmailVerifyScreen> {
 
             const SizedBox(height: 6),
 
-            /// ⚠️ 원래 widget.info.email 처럼 이메일 값을 넣어야 함.
-            ///    widget.info 자체를 String으로 캐스팅하면 오류 가능.
             Text(
               widget.info.email,
               style: const TextStyle(

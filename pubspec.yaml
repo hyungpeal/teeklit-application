@@ -36,6 +36,7 @@ dependencies:
   url_launcher: ^6.3.2
   go_router: ^15.1.2 # add in 25.11.17
   image_picker: 1.1.2
+  shared_preferences: ^2.2.2
 
   flutter_localizations:
     sdk: flutter

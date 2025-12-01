@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -21,6 +22,19 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   bool _isLoading = false;
 
   final _auth = FirebaseAuth.instance;
+
+
+  @override
+  void initState() {
+    super.initState();
+    Fullscreen.enable();
+  }
+
+  @override
+  void dispose() {
+    Fullscreen.disable();
+    super.dispose();
+  }
 
   Future<bool?> _showDeleteConfirmDialog(BuildContext context) {
     return showDialog<bool>(

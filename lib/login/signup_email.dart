@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 
 import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
 import 'signup_info.dart';
 import 'signup_password_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';  // 🔥 추가
+
 
 // ⭐ info 구조 사용
 
@@ -19,11 +22,53 @@ class SignupEmailScreen extends StatefulWidget {
 
 class _SignupEmailScreenState extends State<SignupEmailScreen> {
   final TextEditingController _emailController = TextEditingController();
+
+  //풀스크린
+  @override
+  void initState() {
+    super.initState();
+    Fullscreen.enable();
+  }
+
+
+  // 🔥 이메일 중복 체크 (하나만 남김)
+  Future<bool> checkEmailExists(String email) async {
+    try {
+      final cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: 'dummyPassword123!',
+      );
+
+      // 계정이 새로 생성되었음 = 존재하지 않았음
+      // → 생성한 임시 계정 바로 삭제
+      await cred.user?.delete();
+
+      return false;
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        return true;
+      }
+      return false;
+    }
+  }
+
+
+
+  // 🔥 공통 스낵바 함수 (하나만 남김)
+  void showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   bool isNextEnabled = false;
 
   @override
   void dispose() {
     _emailController.dispose();
+
+    Fullscreen.disable();
     super.dispose();
   }
 
@@ -38,21 +83,24 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     });
   }
 
-  void _goNext() {
+  void _goNext() async {
     final email = _emailController.text.trim();
 
     if (!isValidEmail(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("이메일 형식이 올바르지 않습니다.")),
-      );
+      showSnack("이메일 형식이 올바르지 않습니다.");
       return;
     }
 
-    // ⭐ SignupInfo 생성 (email만 먼저 담는다)
+    // 🔥 중복 체크
+    final exists = await checkEmailExists(email);
+    if (exists) {
+      showSnack("이미 사용 중인 이메일입니다.");
+      return;
+    }
+
+    // 정상
     final info = SignupInfo(email: email);
-
     context.push('/signup-password', extra: info);
-
   }
 
   @override

@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 
 // ⭐ info 기반 구조 통일
 
@@ -26,9 +28,28 @@ class _SignupNicknameScreenState extends State<SignupNicknameScreen> {
   final TextEditingController _nicknameController = TextEditingController();
   bool isButtonEnabled = false;
 
+  //show Snack 헬퍼
+  void _showSnack(String msg) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  // ✅ 닉네임 중복 체크 함수 (여기 안에 Firestore + await)
+  Future<bool> _nicknameExists(String nickname) async {
+    final snap = await FirebaseFirestore.instance
+        .collection('users')
+        .where('nickname', isEqualTo: nickname)
+        .limit(1)
+        .get();
+
+    return snap.docs.isNotEmpty;
+  }
+
+
   @override
   void initState() {
     super.initState();
+    Fullscreen.enable();
 
     _nicknameController.addListener(() {
       final text = _nicknameController.text.trim();
@@ -41,17 +62,32 @@ class _SignupNicknameScreenState extends State<SignupNicknameScreen> {
   @override
   void dispose() {
     _nicknameController.dispose();
+
+    Fullscreen.disable();
     super.dispose();
   }
 
-  void _onNext() {
+  void _onNext() async {
     final nickname = _nicknameController.text.trim();
+
+    if (nickname.isEmpty) {
+      _showSnack("닉네임을 입력해주세요.");
+      return;
+    }
+
+    // 🔥 Firestore 닉네임 중복 체크
+    if (await _nicknameExists(nickname)) {
+      _showSnack("이미 사용 중인 닉네임입니다.");
+      return;
+    }
 
     // ⭐ info에 nickname 추가
     final updatedInfo = widget.info.copyWith(nickname: nickname);
 
+    // 다음 스크린으로 이동
     context.push('/signup-profile', extra: updatedInfo);
   }
+
 
   @override
   Widget build(BuildContext context) {

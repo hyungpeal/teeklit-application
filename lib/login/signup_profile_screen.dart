@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 //프로필 사진 업로드
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 
 import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
@@ -47,6 +48,18 @@ class _SignupProfileScreenState extends State<SignupProfileScreen> {
     setState(() {
       _localImagePath = picked.path;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Fullscreen.enable();
+  }
+
+  @override
+  void dispose() {
+    Fullscreen.disable();
+    super.dispose();
   }
 
   @override
@@ -241,7 +254,11 @@ class _SignupProfileScreenState extends State<SignupProfileScreen> {
                 // 4) 이메일 인증 메일 보내기
                 await user.sendEmailVerification();
 
+                // 🔥 4-1) 바로 로그아웃시키기 (중요)
+                await FirebaseAuth.instance.signOut();
+
                 if (!mounted) return;
+
 
                 // 5) UI 알림 표시
                 ScaffoldMessenger.of(context).showSnackBar(

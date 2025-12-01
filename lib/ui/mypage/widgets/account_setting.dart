@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:teeklit/ui/core/themes/colors.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 import '../../../login/auth_service.dart';
 import 'change_password.dart';
 import 'delete_account.dart';
 
-
-class AccountSettingsScreen extends StatelessWidget {
+class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
+
+  @override
+  State<AccountSettingsScreen> createState() => _AccountSettingsScreenState();
+}
+
+class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Fullscreen.enable();
+  }
+
+  @override
+  void dispose() {
+    Fullscreen.disable();
+    super.dispose();
+  }
 
   Future<void> _confirmLogout(BuildContext context) async {
     final result = await showDialog<bool>(
@@ -15,7 +33,9 @@ class AccountSettingsScreen extends StatelessWidget {
       barrierDismissible: false,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.bg,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         title: const Text(
           '로그아웃',
           style: TextStyle(color: Colors.white),
@@ -27,10 +47,13 @@ class AccountSettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('닫기', style: TextStyle(color: Colors.white70)),
+            child: const Text(
+              '닫기',
+              style: TextStyle(color: Colors.white70),
+            ),
           ),
           ElevatedButton(
-            onPressed: () => context.go('/login'),
+            onPressed: () => Navigator.pop(context, true),   // ✔ result=true 반환
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.green,
               foregroundColor: Colors.black,
@@ -42,12 +65,12 @@ class AccountSettingsScreen extends StatelessWidget {
     );
 
     if (result == true) {
+      // ✔ 실제 Firebase 로그아웃
       await AuthService.instance.signOut();
+
       if (context.mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          '/login',
-              (route) => false,
-        );
+        // ✔ 로그인 화면으로 스택 전체 초기화 후 이동
+        context.go('/login');
       }
     }
   }
@@ -72,6 +95,8 @@ class AccountSettingsScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
           const SizedBox(height: 16),
+
+          // 비밀번호 변경
           _AccountItem(
             title: '비밀번호 변경',
             onTap: () {
@@ -83,15 +108,17 @@ class AccountSettingsScreen extends StatelessWidget {
               );
             },
           ),
+
+          // 로그아웃
           _AccountItem(
             title: '로그아웃',
             onTap: () => _confirmLogout(context),
           ),
+
+          // 탈퇴하기
           _AccountItem(
             title: '탈퇴하기',
-            onTap: () {
-              context.go('/delete-account');
-            },
+            onTap: () => context.go('/delete-account'),
           ),
         ],
       ),
@@ -119,7 +146,10 @@ class _AccountItem extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
             ),
             const Spacer(),
             Icon(

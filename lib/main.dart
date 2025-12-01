@@ -15,6 +15,7 @@ import 'ui/teekle/widgets/teekle_main.dart';
 import 'package:teeklit/ui/mypage/widgets/mypage.dart';
 import 'ui/teekle/widgets/teekle_setting_test.dart';
 import 'ui/teekle/widgets/teekle_setting_test2.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //파이어베이스
 import 'package:firebase_core/firebase_core.dart';
@@ -28,7 +29,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 🔥 세로 고정
+  final prefs = await SharedPreferences.getInstance();
+  final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -55,19 +58,21 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CommunityViewModel()),
         ChangeNotifierProvider(create: (_) => ReportViewModel()),
       ],
-      child: const Teeklit(),
+      child: Teeklit(hasSeenOnboarding: hasSeenOnboarding),
     ),
   );
 }
 
 
 class Teeklit extends StatelessWidget {
-  const Teeklit({super.key});
+  final bool hasSeenOnboarding;
+
+  const Teeklit({super.key, required this.hasSeenOnboarding});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: router,
+      routerConfig: createRouter(hasSeenOnboarding),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Paperlogy'),
       locale: const Locale('ko', 'KR'),
@@ -82,7 +87,6 @@ class Teeklit extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:teeklit/login/terms/terms_bottom_sheet.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 import '../ui/core/themes/app_text.dart';
 import '../ui/core/themes/colors.dart';
 
@@ -18,6 +19,18 @@ class _SignupTermsScreenState extends State<SignupTermsScreen> {
   bool agree3 = false; // 마케팅 (선택)
 
   bool get isButtonEnabled => agree1 && agree2;
+
+  @override
+  void initState() {
+    super.initState();
+    Fullscreen.enable();
+  }
+
+  @override
+  void dispose() {
+    Fullscreen.disable();
+    super.dispose();
+  }
 
   /// 체크박스 + 보기 버튼 UI
   Widget _checkItemWithView({

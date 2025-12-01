@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teeklit/utils/fullscreen.dart';
 
 import '../ui/core/themes/colors.dart';
 import 'signup_info.dart';
@@ -31,10 +32,22 @@ class _SignupPasswordScreenState extends State<SignupPasswordScreen> {
     });
   }
 
+  //풀스크린
+  @override
+  void initState() {
+    super.initState();
+    Fullscreen.enable();
+  }
+
   @override
   void dispose() {
+    // 1) immersive 해제
+    Fullscreen.disable();
+
+    // 2) 컨트롤러 정리
     _pwController.dispose();
     _pwConfirmController.dispose();
+
     super.dispose();
   }
 
