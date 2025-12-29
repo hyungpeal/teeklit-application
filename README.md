@@ -104,7 +104,7 @@ Teeklit은 은둔·고립 청년이 **작고 실행 가능한 행동(‘티클�
 
 ---
 
-## ⚙️ Tech Stack (Community)
+## Tech Stack (Community)
 
 - **Frontend:** Flutter
 - **Routing:** go_router
@@ -154,7 +154,7 @@ Firestore의 **유연한 스키마 구조**를 활용하여
 
 ---
 
-## 📈 What I Learned
+## What I Learned
 
 - Firestore 기반 커뮤니티 데이터 구조 설계 경험
 - Flutter에서 게시판 UI와 상태 흐름 관리
@@ -163,7 +163,7 @@ Firestore의 **유연한 스키마 구조**를 활용하여
 
 ---
 
-## 🔧 Future Improvements (Community)
+## Future Improvements (Community)
 
 - 게시글 추천 로직 고도화
 - 커뮤니티 내 주제별 필터 강화
